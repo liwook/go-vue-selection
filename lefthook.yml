@@ -24,7 +24,11 @@ pre-commit:
       cwd: apps/server
       skip_empty: true
       fail_text: "gofmt 格式化未通过，已自动修复，请重新暂存后提交。"
-      run: gofmt -l -w .
+      # 必须在 apps/server 目录内用 "." 扫描整个后端模块来格式化。
+      # 切勿用 {staged_files}：它是相对仓库根的路径（如 apps/server/pkg/xxx.go），
+      # 与 cwd: apps/server 叠加会变成 apps/server/apps/server/pkg/xxx.go，
+      # gofmt 找不到文件会卡在等待 stdin 输入（表现为终端 ANSI 乱码卡死）。
+      run: gofmt -w .
 
     govet:
       glob: "apps/server/**/*.go"
