@@ -20,11 +20,11 @@ pre-commit:
     #   run: bash -c "pnpm --filter web exec stylelint --fix {staged_files}"
 
     gofmt:
-      glob: "**/*.go"
+      glob: "apps/server/**/*.go"
       cwd: apps/server
       skip_empty: true
       fail_text: "gofmt 格式化未通过，已自动修复，请重新暂存后提交。"
-      run: gofmt -l -w {staged_files}
+      run: gofmt -l -w .
 
     govet:
       glob: "apps/server/**/*.go"
