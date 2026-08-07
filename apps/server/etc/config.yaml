@@ -1,0 +1,38 @@
+name: "vue_admin"
+mode: "dev"
+port: 9000
+
+static:
+  host: "127.0.0.1"
+  path: "./static"
+
+snowflake:
+  machine_id: 1
+
+# pprof 调试端口（可选）。独立端口常驻、仅绑定 127.0.0.1，主业务端口不暴露 /debug/pprof。
+# enabled: 是否开启；port: 调试端口，默认 6060。开发/排障时设为 true。
+pprof:
+  enabled: false
+  port: 6060
+
+auth:
+  jwt_expire: 8760
+  jwt_secret: "liDevops"
+
+log:
+  level: "debug"
+  output: "file"   # file(仅文件) | stdout(仅终端,适合Docker) | both(两者)
+  filename: "app.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+
+postgres:
+  host: "127.0.0.1"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "vue_admin"
+  search_path: "app,public"
+  max_open_conns: 50
+  max_idle_conns: 10

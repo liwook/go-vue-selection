@@ -73,7 +73,7 @@ func Init(configPath string) (*AppConfig, error) {
 	viper.SetConfigFile(configPath)
 	viper.AddConfigPath(".")                  // 指定查找文件的路径（配合相对路径使用）
 	viper.AutomaticEnv()                      // 指定支持从环境变量读取配置
-	viper.SetEnvPrefix("VUE_ADMIN")          // 指定环境变量 KEY 的前缀
+	viper.SetEnvPrefix("VUE_ADMIN")           // 指定环境变量 KEY 的前缀
 	replacer := strings.NewReplacer(".", "_") // 替换规则，将 . 替换为 _
 	viper.SetEnvKeyReplacer(replacer)
 	if err := viper.ReadInConfig(); err != nil {
