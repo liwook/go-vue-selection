@@ -8,9 +8,14 @@
     "lint:vue": "pnpm --filter web lint:vue",
     "format": "pnpm --filter web format"
   },
-  "packageManager": "pnpm@11.20.0",  
+  "packageManager": "pnpm@11.20.0",
   "engines": {
     "node": ">=20",
     "pnpm": ">=9"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "lefthook": "^2.1.10"
   }
 }
