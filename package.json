@@ -1,0 +1,16 @@
+{
+  "name": "go-vue-selection",
+  "scripts": {
+    "prepare": "lefthook install",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "lint:vue": "pnpm --filter web lint:vue",
+    "format": "pnpm --filter web format"
+  },
+  "packageManager": "pnpm@11.20.0",  
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}
