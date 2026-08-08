@@ -64,6 +64,24 @@ pnpm dev
 | `pnpm -C apps/frontend build` | 前端类型检查 + 构建 |
 | `pnpm -C apps/backend exec golangci-lint run` | 后端 lint（或进入目录执行） |
 | `cd apps/backend && go vet ./...` | 后端静态检查 |
+| `cd apps/server && go test -tags=integration ./tests/...` | 后端集成测试（需连 `vue_admin_test` 库） |
+| `cd apps/server && go test -tags=integration -race ./tests/...` | 集成测试 + 竞态检测（CI 定时/发布前跑，见下） |
+
+### 测试与竞态检测（`-race`）
+
+集成测试通过进程内 `httptest.Server` 串行发起 HTTP 请求，用例之间无并发、包级 `apiClient` 在 `TestMain` 初始化后只读，因此**日常本地回归不必带 `-race`**：
+
+```bash
+cd apps/server && go test -tags=integration ./tests/...
+```
+
+`-race` 的价值在于"体检"被测的服务器代码（handler / middleware / 全局组件）在并发请求下是否隐藏数据竞争，建议放到 CI 定时任务或发布前检查中跑一遍（成本仅慢几倍）：
+
+```bash
+cd apps/server && go test -tags=integration -race ./tests/...
+```
+
+前提：必须在 `apps/server` 目录下，且能连上 `vue_admin_test` 库、存在 `./etc/config.yaml`（由 `TestMain` 加载）。若后续编写并发/压测类用例（用了 `t.Parallel()` 或多个 goroutine 复用 `apiClient`），则必须默认带 `-race`。
 
 ## Git 提交规范
 
