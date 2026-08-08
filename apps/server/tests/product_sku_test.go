@@ -110,13 +110,13 @@ func TestSkuSaleAttr(t *testing.T) {
 
 	// 2. save SKU（携带销售属性子表）
 	apiClient.Post(t, "/admin/product/sku", types.SkuInfo{
-		SpuID:       spuID,
-		Category3ID: c3ID,
-		TmID:        tmID,
-		SkuName:     "IT-SKU-SA-001",
-		WeightMg:    500,
-		PriceCent:   9900,
-		SkuDesc:     "integration test sku with sale attr",
+		SpuID:                spuID,
+		Category3ID:          c3ID,
+		TmID:                 tmID,
+		SkuName:              "IT-SKU-SA-001",
+		WeightMg:             500,
+		PriceCent:            9900,
+		SkuDesc:              "integration test sku with sale attr",
 		SkuSaleAttrValueList: saleAttrValues,
 	})
 
