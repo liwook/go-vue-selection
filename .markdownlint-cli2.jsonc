@@ -1,0 +1,16 @@
+{
+  // markdownlint CLI2 配置（仓库根）
+  // 规则引擎为 markdownlint（MD001~MD048）。
+  // 本项目用 --fix 自动修复可格式化的项，仅关闭少数与文档风格冲突的规则。
+  "config": {
+    "default": true,
+    "MD013": false, // 行宽：文档含长 URL/表格，不强制折行
+    "MD033": false, // 允许内联 HTML（如语雀占位、原始标签）
+    "MD041": false  // 允许文件无一级标题（部分说明文档开头非标题）
+  },
+  "ignores": [
+    "node_modules/**",
+    "**/dist/**",
+    "**/coverage/**"
+  ]
+}

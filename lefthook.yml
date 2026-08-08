@@ -38,6 +38,18 @@ pre-commit:
       # 固定用 ./... 扫描整个后端模块
       run: bash -c "cd apps/server && go vet ./..."
 
+    # markdownlint-cli2：纯 JS（Node）实现的 Markdown 格式化 + 规则修复工具，
+    # 用 --fix 只修可自动修复的格式/规则问题、不阻塞提交。
+    # 用 {staged_files} 限定只重写本次暂存的 .md（含中文路径），不动历史文档。
+    # 选纯 JS 而非纯 Go(markdownfmt) 的根因：Go 二进制在 Windows 下依赖系统
+    # "Beta UTF-8" 区域开关才能正确打开中文路径，否则 os.Open 中文路径直接失败；
+    # Node 在 Windows 走 UTF-16 系统调用，天然支持中文路径，无此坑。
+    mdformat:
+      glob: "**/*.md"
+      skip_empty: true
+      fail_text: "Markdown 已自动格式化，请重新暂存（git add）后提交。"
+      run: bash -c "pnpm exec markdownlint-cli2 --fix {staged_files}"
+
 commit-msg:
   commands:
     commitlint:
