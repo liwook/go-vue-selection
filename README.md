@@ -7,7 +7,7 @@
 
 ## 仓库布局
 
-```
+```text
 newproject/
 ├── .gitignore
 ├── .npmrc                # 强制 pnpm（engine-strict=true）
@@ -19,6 +19,7 @@ newproject/
 └── apps/
     ├── server/           # Go + Gin（业务代码自行实现）
     └── web/              # Vue3 + Vite + TS（name: vue_admin）
+```
 
 ## 技术栈与工程化
 
@@ -64,8 +65,8 @@ cd apps/server && cp .env.example .env   # 先填 POSTGRES_PASSWORD
 docker compose up -d
 ```
 
-前端开发服务器：http://localhost:5173
-后端接口示例：http://localhost:9000/health
+前端开发服务器：[http://localhost:5173](http://localhost:5173)
+后端接口示例：[http://localhost:9000/health](http://localhost:9000/health)
 
 > 说明：根目录的 `pnpm dev` 仅启动前端；后端需单独运行。
 > 后端默认通过 `apps/server/etc/config.yaml` 读取配置，监听 `:9000`，启动时自动灌入幂等种子数据。
@@ -77,7 +78,7 @@ docker compose up -d
 curl http://127.0.0.1:9000/health   # 返回 OK / 200 即正常
 ```
 
-接口文档（Swagger）：执行 `cd apps/server && make swagger` 生成到 `api/`，访问 http://localhost:9000/swagger/index.html
+接口文档（Swagger）：执行 `cd apps/server && make swagger` 生成到 `api/`，访问 [http://localhost:9000/swagger/index.html](http://localhost:9000/swagger/index.html)
 
 ### 后端配置速览（`apps/server/etc/config.yaml`）
 
@@ -128,7 +129,7 @@ cd apps/server && go test -tags=integration -race ./tests/...
 
 示例：
 
-```
+```text
 feat: 新增用户登录接口
 chore: 初始化前端工程
 fix: 修复 CORS 跨域问题
