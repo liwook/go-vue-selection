@@ -33,6 +33,14 @@ apps/server/etc/config.yaml
 # 集成测试上传产物（文件上传用例生成的 static 目录）
 apps/server/tests/static/
 
+# swag 生成的 OpenAPI 文档（由 make swagger 生成，非手写）
+apps/server/api/docs.go
+apps/server/api/swagger.json
+apps/server/api/swagger.yaml
+
+# Go 编译产物（go build 输出）
+apps/server/bin/
+
 # ===================== 编辑器 / 系统 =====================
 .vscode/*
 !.vscode/extensions.json

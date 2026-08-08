@@ -19,6 +19,10 @@ import (
 	"github.com/liwook/go-vue-selection/router"
 	"github.com/liwook/go-vue-selection/seed"
 
+	// 导入由 swag 生成的 OpenAPI 文档包，将 SwaggerInfo 注入运行时，
+	// 使 /swagger/*any 路由能展示接口文档。生成物位于 api/ 目录。
+	_ "github.com/liwook/go-vue-selection/api"
+
 	"log/slog"
 )
 

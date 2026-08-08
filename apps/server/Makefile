@@ -4,7 +4,11 @@
 GO ?= go
 PKG := ./...
 
-.PHONY: test test-unit test-it vet build fmt tidy
+.PHONY: test test-unit test-it vet build fmt tidy swagger
+
+## swagger: 根据代码注解生成 OpenAPI 文档到 api/ 目录
+swagger:
+	$(GO) run github.com/swaggo/swag/cmd/swag init -g main.go -o api --parseDependency --parseInternal
 
 ## test: 运行全部单元测试（默认）
 test: test-unit
@@ -23,7 +27,7 @@ vet:
 
 ## build: 编译服务
 build:
-	$(GO) build -o bin/server ./cmd/...
+	$(GO) build -o bin/server .
 
 ## fmt: 格式化
 fmt:
