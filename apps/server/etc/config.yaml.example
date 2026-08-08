@@ -17,7 +17,7 @@ pprof:
 
 auth:
   jwt_expire: 8760
-  jwt_secret: "liDevops"
+  jwt_secret: "CHANGE_ME"          # 生产环境务必替换为强随机密钥（环境变量 VUE_ADMIN_AUTH_JWT_SECRET 可覆盖）
 
 log:
   level: "debug"
@@ -31,7 +31,7 @@ postgres:
   host: "127.0.0.1"
   port: 5432
   user: "postgres"
-  password: "postgres"
+  password: "CHANGE_ME"            # 生产环境真实密码，勿提交（环境变量 VUE_ADMIN_POSTGRES_PASSWORD 可覆盖）
   dbname: "vue_admin"
   search_path: "app,public"
   max_open_conns: 50
