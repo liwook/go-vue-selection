@@ -5,10 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
 	"github.com/liwook/go-vue-selection/config"
 	"github.com/liwook/go-vue-selection/pkg/logger"
 	"github.com/liwook/go-vue-selection/pkg/snowflake"
@@ -90,8 +92,49 @@ func main() {
 	// 6. 注册路由
 	r := router.Setup(cfg, db)
 
+	// 6.5 启动独立的 pprof 调试 server（常驻、仅绑定 localhost，不污染主业务端口）
+	startPprofServer(cfg)
+
 	// 7. 启动服务（含优雅关闭）
 	run(r, cfg.Port)
+}
+
+// startPprofServer 按配置启动一个独立的 pprof 调试 HTTP server。
+// 采用独立 ServeMux + 绑定 127.0.0.1 的方案，确保：
+//  1. 主业务端口（如 9000）不暴露 /debug/pprof，避免信息泄露与 DoS 风险；
+//  2. 仅本机/跳板机可达，外网不可达；
+//  3. 常驻但几乎零开销——只有主动发 /debug/pprof/profile 或 /trace 才会真正采样。
+func startPprofServer(cfg *config.AppConfig) {
+	if !cfg.Pprof.Enabled {
+		slog.Debug("pprof disabled, skip starting debug server")
+		return
+	}
+	port := cfg.Pprof.Port
+	if port == 0 {
+		port = 6060
+	}
+	// 独立 mux，避免污染 DefaultServeMux 与 gin 主路由。
+	// 注：这里没有用 `import _ "net/http/pprof"` 的简写方式，原因是：
+	//   - 该方式会把路由注册到全局的 http.DefaultServeMux；
+	//   - 而本项目使用 gin，主 server 走的是 gin 自己的 router，并不接 DefaultServeMux，
+	//     若依赖 DefaultServeMux 需另起一个 handler 为 nil 的 server 才能生效；
+	//   - 显式 NewServeMux() 可将 debug 路由严格隔离在独立 mux 中，
+	//     既不与任何全局默认 mux 纠缠，也保证主业务端口（port）绝不暴露 /debug/pprof。
+	mux := http.NewServeMux()
+	mux.HandleFunc("/debug/pprof/", pprof.Index)          // 概览页，列出所有 profile 类型
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline) // 启动命令行参数
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile) // CPU profile（默认采未来 30s）
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)   // 地址转符号
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)     // 执行跟踪
+
+	addr := fmt.Sprintf("127.0.0.1:%d", port)
+	srv := &http.Server{Addr: addr, Handler: mux}
+	go func() {
+		slog.Info("pprof debug server started", "addr", addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			slog.Error("pprof server start failed", "error", err)
+		}
+	}()
 }
 
 // setupLogger 初始化日志组件并注册日志级别热更新钩子。
