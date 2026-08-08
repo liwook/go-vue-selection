@@ -2,8 +2,8 @@
 
 前后端同仓（monorepo）练习项目。
 
-- 前端：`apps/frontend`（Vue3 + Vite + TypeScript，工程名 `vue_admin`）
-- 后端：`apps/backend`（Go + Gin）
+- 前端：`apps/web`（Vue3 + Vite + TypeScript，工程名 `vue_admin`）
+- 后端：`apps/server`（Go + Gin）
 
 ## 仓库布局
 
@@ -16,8 +16,8 @@ newproject/
 ├── pnpm-workspace.yaml   # pnpm 工作区
 ├── lefthook.yml          # 统一 Git 钩子（pre-commit / commit-msg）
 └── apps/
-    ├── backend/          # Go + Gin（业务代码自行实现）
-    └── frontend/         # Vue3 + Vite + TS（name: vue_admin）
+    ├── server/           # Go + Gin（业务代码自行实现）
+    └── web/              # Vue3 + Vite + TS（name: vue_admin）
 ```
 
 ## 技术栈与工程化
@@ -43,27 +43,37 @@ newproject/
 ## 快速开始
 
 ```bash
-# 1. 安装依赖（根目录，会安装前后端所需）
+# 1. 安装前端依赖（根目录）
 pnpm install
 
-# 2. 一键启动前后端（前端 5173，后端 8080）
+# 2. 启动前端开发服务器（5173）
 pnpm dev
+
+# 3. 后端启动方式（二选一）
+# 方式 A：本地直接运行（需已装 Go，且存在 ./apps/server/etc/config.yaml）
+cd apps/server && go run ./cmd/server
+
+# 方式 B：容器化启动（PostgreSQL + 后端，依赖 docker-compose）
+cd apps/server && cp .env.example .env   # 按需修改
+docker compose up -d
 ```
 
 前端开发服务器：http://localhost:5173
 后端接口示例：http://localhost:8080/api/health
 
+> 说明：根目录的 `pnpm dev` 仅启动前端；后端需单独运行。后端默认通过 `apps/server/etc/config.yaml` 读取配置，容器化部署时由 `docker-compose.yaml` 中的环境变量覆盖数据库连接等信息，日志统一输出到 stdout。
+
 ## 常用脚本
 
 | 命令 | 说明 |
 | --- | --- |
-| `pnpm dev` | 同时启动前端与后端 |
+| `pnpm dev` | 启动前端开发服务器（仅前端） |
 | `pnpm -C apps/frontend lint` | 前端 ESLint 检查 |
 | `pnpm -C apps/frontend stylelint` | 前端 Stylelint 检查 |
 | `pnpm -C apps/frontend format` | 前端 Prettier 格式化 |
 | `pnpm -C apps/frontend build` | 前端类型检查 + 构建 |
-| `pnpm -C apps/backend exec golangci-lint run` | 后端 lint（或进入目录执行） |
-| `cd apps/backend && go vet ./...` | 后端静态检查 |
+| `pnpm -C apps/server exec golangci-lint run` | 后端 lint（或进入目录执行） |
+| `cd apps/server && go vet ./...` | 后端静态检查 |
 | `cd apps/server && go test -tags=integration ./tests/...` | 后端集成测试（需连 `vue_admin_test` 库） |
 | `cd apps/server && go test -tags=integration -race ./tests/...` | 集成测试 + 竞态检测（CI 定时/发布前跑，见下） |
 
