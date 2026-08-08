@@ -132,3 +132,22 @@ func findSpuIDByName(t *testing.T, c3ID, name string) string {
 	}
 	return ""
 }
+
+// TestSpuImages 验证 SPU 图片随 SPU 一起保存，且可通过 /spu/:spuId/images 回查。
+func TestSpuImages(t *testing.T) {
+	const spuName = "IT-SPU-IMG"
+
+	spuID, _, _ := prepareSpuForTest(t, spuName)
+	t.Cleanup(func() { apiClient.Delete(t, "/admin/product/spu/"+spuID) })
+
+	// 回查图片列表
+	resp := apiClient.Get(t, "/admin/product/spu/"+spuID+"/images")
+	var imgs []*types.SpuImage
+	resp.decodeData(&imgs)
+	if len(imgs) == 0 {
+		t.Fatalf("spu %q should have at least one image", spuID)
+	}
+	if imgs[0].ImageUrl == "" {
+		t.Fatalf("spu image url should not be empty")
+	}
+}

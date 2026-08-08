@@ -79,3 +79,64 @@ func skuIsSale(t *testing.T, skuID string) int8 {
 	resp.decodeData(&info)
 	return info.IsSale
 }
+
+// TestSkuSaleAttr 验证 SKU 销售属性子表可正确写入：从 SPU 销售属性值回填 SkuSaleAttrValueList。
+func TestSkuSaleAttr(t *testing.T) {
+	const spuName = "IT-SKU-SA"
+
+	spuID, c3ID, tmID := prepareSpuForTest(t, spuName)
+
+	// 1. 取 SPU 下的销售属性（含 saleAttrValueId 外键）
+	resp := apiClient.Get(t, "/admin/product/spu/"+spuID+"/saleAttr")
+	var saleAttrs []*types.SpuSaleAttr
+	resp.decodeData(&saleAttrs)
+	if len(saleAttrs) == 0 {
+		t.Fatalf("spu %q should have sale attrs", spuID)
+	}
+	var saleAttrValues []*types.SkuSaleAttrValueDTO
+	for _, sa := range saleAttrs {
+		for _, v := range sa.SpuSaleAttrValue {
+			saleAttrValues = append(saleAttrValues, &types.SkuSaleAttrValueDTO{
+				SaleAttrID:        sa.BaseSaleAttrId,
+				SaleAttrValueID:   v.SaleAttrValueID,
+				SaleAttrName:      sa.SaleAttrName,
+				SaleAttrValueName: v.SaleAttrValueName,
+			})
+		}
+	}
+	if len(saleAttrValues) == 0 {
+		t.Fatalf("spu %q should have at least one sale attr value", spuID)
+	}
+
+	// 2. save SKU（携带销售属性子表）
+	apiClient.Post(t, "/admin/product/sku", types.SkuInfo{
+		SpuID:       spuID,
+		Category3ID: c3ID,
+		TmID:        tmID,
+		SkuName:     "IT-SKU-SA-001",
+		WeightMg:    500,
+		PriceCent:   9900,
+		SkuDesc:     "integration test sku with sale attr",
+		SkuSaleAttrValueList: saleAttrValues,
+	})
+
+	// 3. 反查 skuId
+	skuID := findSkuIDBySpu(t, spuID)
+	if skuID == "" {
+		t.Fatalf("created sku for spu %q not found", spuID)
+	}
+	t.Cleanup(func() { apiClient.Delete(t, "/admin/product/sku/"+skuID) })
+
+	// 4. info 验证销售属性子表已写入
+	infoResp := apiClient.Get(t, "/admin/product/sku/"+skuID)
+	var info types.ResponseSkuInfo
+	infoResp.decodeData(&info)
+	if len(info.SkuSaleAttrValueList) == 0 {
+		t.Fatalf("sku %q should have sale attr value list", skuID)
+	}
+	got := info.SkuSaleAttrValueList[0]
+	if got.SaleAttrValueID != saleAttrValues[0].SaleAttrValueID {
+		t.Fatalf("sku sale attr value id mismatch, got=%q want=%q",
+			got.SaleAttrValueID, saleAttrValues[0].SaleAttrValueID)
+	}
+}
