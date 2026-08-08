@@ -15,7 +15,7 @@ test-unit:
 
 ## test-it: 运行集成测试（需要 -tags=integration，且 tests/ 目录存在）
 test-it:
-	$(GO) test -tags=integration ./tests/...
+	$(GO) test -tags=integration -v ./tests/...
 
 ## vet: 静态检查
 vet:
