@@ -30,6 +30,9 @@ go.work.sum
 # 模板用 config.yaml.example，本地/生产真实配置 config.yaml 不入库
 apps/server/etc/config.yaml
 
+# 集成测试上传产物（文件上传用例生成的 static 目录）
+apps/server/tests/static/
+
 # ===================== 编辑器 / 系统 =====================
 .vscode/*
 !.vscode/extensions.json
