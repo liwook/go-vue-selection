@@ -12,9 +12,9 @@ import (
 // 为避免跨文件依赖，分类在此自包含创建（复用包内 findC2ByName/findC3ByName）。
 func TestAttrFlow(t *testing.T) {
 	const (
-		c2Name = "ITAttr二级"
-		c3Name = "ITAttr三级"
-		c1ID   = "1" // 图书
+		c2Name   = "ITAttr二级"
+		c3Name   = "ITAttr三级"
+		c1ID     = "1" // 图书
 		attrName = "IT属性"
 	)
 

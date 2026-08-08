@@ -72,7 +72,6 @@ func TestUserDeleteSelf(t *testing.T) {
 		http.StatusOK, int(result.CodeNoPermission))
 }
 
-
 // adminUserID 从用户列表按 username="admin" 反查当前登录管理员 userId。
 func adminUserID(t *testing.T) string {
 	t.Helper()
