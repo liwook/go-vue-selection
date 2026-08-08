@@ -40,7 +40,8 @@ newproject/
 
 - Node.js（建议 LTS）
 - [pnpm](https://pnpm.io/)（`npm i -g pnpm` 或 `corepack enable`）
-- Go（建议 1.21+）
+- Go 1.26.3+（`apps/server/go.mod` 限定）
+- Docker + Docker Compose（仅容器化启动后端时需要；自带 PostgreSQL 18.3）
 
 ## 快速开始
 
@@ -52,18 +53,43 @@ pnpm install
 pnpm dev
 
 # 3. 后端启动方式（二选一）
-# 方式 A：本地直接运行（需已装 Go，且存在 ./apps/server/etc/config.yaml）
-cd apps/server && go run ./cmd/server
 
-# 方式 B：容器化启动（PostgreSQL + 后端，依赖 docker-compose）
-cd apps/server && cp .env.example .env   # 按需修改
+# 方式 A：本地直接运行（需已装 Go，且存在 apps/server/etc/config.yaml）
+#   - 配置中 postgres.host 默认指向 106.12.122.101，请改成你本地/可达的 PG 地址
+#   - 启动后监听 :9000，配置加载支持 -f 指定配置文件路径
+cd apps/server && go run .
+
+# 方式 B：容器化启动（PostgreSQL 18.3 + 后端，自动建表 + 灌初始数据）
+cd apps/server && cp .env.example .env   # 先填 POSTGRES_PASSWORD
 docker compose up -d
 ```
 
 前端开发服务器：http://localhost:5173
-后端接口示例：http://localhost:8080/api/health
+后端接口示例：http://localhost:9000/health
 
-> 说明：根目录的 `pnpm dev` 仅启动前端；后端需单独运行。后端默认通过 `apps/server/etc/config.yaml` 读取配置，容器化部署时由 `docker-compose.yaml` 中的环境变量覆盖数据库连接等信息，日志统一输出到 stdout。
+> 说明：根目录的 `pnpm dev` 仅启动前端；后端需单独运行。
+> 后端默认通过 `apps/server/etc/config.yaml` 读取配置，监听 `:9000`，启动时自动灌入幂等种子数据。
+> 容器化部署时由 `docker-compose.yaml` 中的环境变量（前缀 `VUE_ADMIN_`，如 `VUE_ADMIN_POSTGRES_HOST=pg`、`VUE_ADMIN_LOG_OUTPUT=stdout`）覆盖数据库与日志输出，日志统一输出到 stdout，`pg` 容器首次启动会自动执行 `apps/server/init-sql/` 下的建表脚本。
+
+### 验证后端启动成功
+
+```bash
+curl http://127.0.0.1:9000/health   # 返回 OK / 200 即正常
+```
+
+接口文档（Swagger）：执行 `cd apps/server && make swagger` 生成到 `api/`，访问 http://localhost:9000/swagger/index.html
+
+### 后端配置速览（`apps/server/etc/config.yaml`）
+
+| 段 | 关键字段 | 说明 |
+| --- | --- | --- |
+| 顶层 | `port` | HTTP 监听端口，默认 `9000` |
+| `postgres` | `host` / `port` / `user` / `password` / `dbname` | PostgreSQL 连接；可用 `VUE_ADMIN_POSTGRES_*` 环境变量覆盖 |
+| `log` | `output`（`file`/`stdout`/`both`） | Docker 下建议 `stdout`；本地默认写 `app.log` |
+| `auth` | `jwt_secret` / `jwt_expire` | JWT 密钥与过期时长（小时） |
+| `pprof` | `enabled` / `port` | 调试端口，默认关闭，仅绑定 127.0.0.1 |
+
+> 常用后端命令（在 `apps/server` 下）：`make build` 编译、`make vet` 静态检查、`make test-unit` 单元测试、`make test-it` 集成测试、`make swagger` 生成文档。更完整的后端设计/测试规范见 `apps/server/docs/`。
 
 ## 常用脚本
 
