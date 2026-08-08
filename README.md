@@ -10,29 +10,31 @@
 ```
 newproject/
 ├── .gitignore
-├── .editorconfig
 ├── .npmrc                # 强制 pnpm（engine-strict=true）
-├── package.json          # 根启动编排（concurrently 一键启动）
-├── pnpm-workspace.yaml   # pnpm 工作区
+├── .gitattributes        # 统一换行符为 LF（配合 Biome lineEnding: lf）
+├── package.json          # 根编排：pnpm workspace + 跨端脚本（prepare / dev / build / lint 转发到 apps/web）
+├── pnpm-workspace.yaml   # pnpm 工作区（apps/*）
 ├── lefthook.yml          # 统一 Git 钩子（pre-commit / commit-msg）
+├── commitlint.config.mjs # 提交信息校验（Conventional Commits）
 └── apps/
     ├── server/           # Go + Gin（业务代码自行实现）
     └── web/              # Vue3 + Vite + TS（name: vue_admin）
-```
 
 ## 技术栈与工程化
 
 | 层 | 工具 |
 | --- | --- |
 | 前端框架 | Vue3 + Vite + TypeScript |
-| 前端代码检查 | ESLint（typescript-eslint + eslint-plugin-vue） |
-| 样式检查 | Stylelint |
-| 代码格式化 | Prettier |
+| 前端 lint + 格式化 | Biome（`.js/.ts/.vue(<script>)`，主力） |
+| 前端模板检查 | ESLint（仅 `.vue` 的 `<template>`） |
+| 样式检查 | 暂未启用（Stylelint 待 CSS 规范需求时接入） |
 | 类型检查 | vue-tsc（纳入 `build`） |
 | 提交信息规范 | commitlint（Conventional Commits） |
-| 后端代码检查 | golangci-lint + `go vet ./...` |
+| 后端代码检查 | golangci-lint（`.golangci.yml`）+ `gofmt` + `go vet ./...` |
 | 统一 Git 钩子 | lefthook（Go 实现，前后端一起管） |
 | 包管理 | 强制 pnpm（禁止 npm） |
+
+> 说明：前端格式化与 lint 由 **Biome** 统一承担，**不使用 Prettier**；ESLint 仅补 `.vue` 模板规则，不引入 `typescript-eslint` 解析器（避免与 Biome 在 `.ts` 规则上重叠）。详见 `工程化配置指南.md`。
 
 ## 环境要求
 
@@ -68,11 +70,11 @@ docker compose up -d
 | 命令 | 说明 |
 | --- | --- |
 | `pnpm dev` | 启动前端开发服务器（仅前端） |
-| `pnpm -C apps/frontend lint` | 前端 ESLint 检查 |
-| `pnpm -C apps/frontend stylelint` | 前端 Stylelint 检查 |
-| `pnpm -C apps/frontend format` | 前端 Prettier 格式化 |
-| `pnpm -C apps/frontend build` | 前端类型检查 + 构建 |
-| `pnpm -C apps/server exec golangci-lint run` | 后端 lint（或进入目录执行） |
+| `pnpm --filter web lint` | 前端 Biome 检查（lint + 格式化） |
+| `pnpm --filter web lint:vue` | 前端 ESLint 仅查 `.vue` 模板 |
+| `pnpm --filter web format` | 前端 Biome 格式化（`biome check --write`） |
+| `pnpm --filter web build` | 前端类型检查（vue-tsc）+ 构建 |
+| `cd apps/server && golangci-lint run ./...` | 后端聚合 lint |
 | `cd apps/server && go vet ./...` | 后端静态检查 |
 | `cd apps/server && go test -tags=integration ./tests/...` | 后端集成测试（需连 `vue_admin_test` 库） |
 | `cd apps/server && go test -tags=integration -race ./tests/...` | 集成测试 + 竞态检测（CI 定时/发布前跑，见下） |
@@ -106,7 +108,7 @@ chore: 初始化前端工程
 fix: 修复 CORS 跨域问题
 ```
 
-`pre-commit` 钩子会自动并行执行：前端 lint + 后端 golangci-lint + `go vet ./...`。
+`pre-commit` 钩子会自动并行执行：前端 Biome 检查 + ESLint（仅 `.vue` 模板）+ 后端 `gofmt` 格式化 + `go vet ./...`（golangci-lint 不在钩子里跑，需手动在 `apps/server` 执行）。
 
 ## 分工说明
 
