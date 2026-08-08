@@ -51,6 +51,13 @@ services:
     # 挂载 etc/ 下的 PG 配置文件覆盖容器内的 /etc/config.yaml
     volumes:
       - ./etc/config.yaml:/etc/config.yaml
+    # 存活探针：容器内以非 root 用户运行，使用 alpine 自带的 wget 探 /health 接口
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     depends_on:
       pg:
         condition: service_healthy

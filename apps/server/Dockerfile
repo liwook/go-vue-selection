@@ -23,8 +23,14 @@ COPY . .
 RUN go build -o app .
 
 
-# 接下来创建一个小镜像
-FROM scratch
+# 接下来创建一个轻量运行镜像
+FROM alpine:3.22
+
+# 安装 CA 证书（用于 HTTPS/TLS 出站请求）和健康检查所需的 wget
+RUN apk add --no-cache ca-certificates wget \
+    # 创建非 root 用户 appuser（uid/gid 10001），运行时以该用户身份执行
+    && addgroup -S appuser \
+    && adduser -S -D -H -s /sbin/nologin -G appuser -u 10001 appuser
 
 # 从builder镜像中把静态文件和配置文件拷贝到根目录
 COPY --from=builder /build/static /static
@@ -33,8 +39,14 @@ COPY --from=builder /build/etc /etc
 # 从builder镜像中把 app 拷贝到根目录
 COPY --from=builder /build/app /app
 
+# 将所需文件权属交给非 root 用户（app 二进制、配置、静态资源）
+RUN chown -R appuser:appuser /app /etc /static
+
 # 声明服务端口
 EXPOSE 9000
 
-# 需要运行的命令（使用绝对路径，避免 scratch 镜像中工作目录不确定导致的找不到配置文件问题）
+# 切换到非 root 用户运行
+USER appuser
+
+# 需要运行的命令（使用绝对路径）
 ENTRYPOINT ["/app", "-f", "/etc/config.yaml"]
