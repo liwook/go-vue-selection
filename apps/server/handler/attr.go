@@ -2,9 +2,9 @@ package handler
 
 import (
 	"context"
-	"log/slog"
 	"github.com/liwook/go-vue-selection/pkg/errs"
 	"github.com/liwook/go-vue-selection/pkg/idconv"
+	"log/slog"
 
 	"github.com/liwook/go-vue-selection/types"
 
