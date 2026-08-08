@@ -1,0 +1,65 @@
+services:
+  # PostgreSQL 18 数据库（容器首次启动自动执行 init-sql/ 下的 SQL 建表并灌入初始数据）
+  pg:
+    image: postgres:18.3-alpine
+    container_name: vue_admin_pg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123!
+      POSTGRES_DB: vue_admin
+      TZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # 挂载建表脚本目录，PostgreSQL 官方镜像会在首次启动（数据目录为空时）
+      # 自动按文件名字母序执行该目录下的 .sql 文件（此处即 init-sql/init.sql）
+      - ./init-sql/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vue_admin"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: always
+    networks:
+      - app-net
+
+  # 后端服务（使用 PG 版配置）
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vue-admin-backend:latest
+    container_name: vue_admin_backend
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      # 容器内日志打到 stdout，由 docker 日志系统采集（docker logs 可见）
+      VUE_ADMIN_LOG_OUTPUT: "stdout"
+      # 以下环境变量覆盖挂载进容器的 etc/config.yaml，使后端连接到 compose 内的 pg 服务
+      # （viper 的 AutomaticEnv 优先级高于配置文件，故容器内会以 pg 为主机名连库）
+      VUE_ADMIN_POSTGRES_HOST: pg
+      VUE_ADMIN_POSTGRES_PORT: "5432"
+      VUE_ADMIN_POSTGRES_USER: postgres
+      VUE_ADMIN_POSTGRES_PASSWORD: postgres123!
+      VUE_ADMIN_POSTGRES_DBNAME: vue_admin
+    ports:
+      - "9000:9000"
+      # pprof 调试端口（仅当容器内 config.yaml 的 pprof.enabled=true 时才实际监听）。
+      # 映射到宿主机方便用 `go tool pprof http://127.0.0.1:6060/...` 在宿主机抓采样。
+      - "6060:6060"
+    # 挂载 etc/ 下的 PG 配置文件覆盖容器内的 /etc/config.yaml
+    volumes:
+      - ./etc/config.yaml:/etc/config.yaml
+    depends_on:
+      pg:
+        condition: service_healthy
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:
+    driver: bridge

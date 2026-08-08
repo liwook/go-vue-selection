@@ -1,0 +1,6 @@
+.git
+init-sql
+*.md
+*.log
+.codebuddy
+docs
