@@ -2,12 +2,12 @@ package handler
 
 import (
 	"context"
-	"log/slog"
-	"strconv"
-	"strings"
 	"github.com/liwook/go-vue-selection/pkg/errs"
 	"github.com/liwook/go-vue-selection/pkg/translation"
 	"github.com/liwook/go-vue-selection/types"
+	"log/slog"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
