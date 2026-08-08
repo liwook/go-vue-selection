@@ -48,7 +48,10 @@ pre-commit:
       glob: "**/*.md"
       skip_empty: true
       fail_text: "Markdown 已自动格式化，请重新暂存（git add）后提交。"
-      run: bash -c "pnpm exec markdownlint-cli2 --fix {staged_files}"
+      # 直接由 lefthook 执行（不裹 bash -c）：lefthook 会自动对每个暂存文件加双引号，
+      # 正确处理中文/空格路径。Windows Git Bash 下用 bash -c 包裹 pnpm exec 会导致
+      # 命令被解析成裸 pnpm（打印帮助并以退出码 1 中止提交）。
+      run: pnpm exec markdownlint-cli2 --fix {staged_files}
 
 commit-msg:
   commands:
