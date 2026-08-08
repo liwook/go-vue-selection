@@ -3,8 +3,10 @@
 package tests
 
 import (
+	"net/http"
 	"testing"
 
+	"github.com/liwook/go-vue-selection/pkg/result"
 	"github.com/liwook/go-vue-selection/types"
 )
 
@@ -73,4 +75,13 @@ func findC3ByName(t *testing.T, c2ID, name string) string {
 		}
 	}
 	return ""
+}
+
+// TestCategoryNegative 验证三级分类绑定不存在的父级（外键约束失败）返回分类 DB 错误。
+func TestCategoryNegative(t *testing.T) {
+	// 使用一个不可能存在的二级分类 ID，插入会因外键约束失败
+	apiClient.Call(t, "POST", "/admin/product/category3", types.ParamC3Create{
+		Name:        "IT三级分类-孤儿",
+		Category2ID: "0",
+	}, http.StatusOK, int(result.CodeCategoryDBErr))
 }

@@ -72,3 +72,13 @@ func findAttrIDByName(t *testing.T, c1, c2, c3, name string) string {
 	}
 	return ""
 }
+
+// TestAttrGetEmpty 验证查询不存在分类下的属性返回空列表（不报错）。
+func TestAttrGetEmpty(t *testing.T) {
+	resp := apiClient.Get(t, "/admin/product/attr/0/0/0")
+	var list []*types.Attr
+	resp.decodeData(&list)
+	if len(list) != 0 {
+		t.Fatalf("expected empty attr list for non-existent category, got %d", len(list))
+	}
+}

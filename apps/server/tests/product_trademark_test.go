@@ -3,8 +3,10 @@
 package tests
 
 import (
+	"net/http"
 	"testing"
 
+	"github.com/liwook/go-vue-selection/pkg/result"
 	"github.com/liwook/go-vue-selection/types"
 )
 
@@ -56,4 +58,24 @@ func findTmIDByName(t *testing.T, name string) string {
 		}
 	}
 	return ""
+}
+
+// TestTrademarkNegative 验证品牌名重复创建返回品牌业务错误。
+func TestTrademarkNegative(t *testing.T) {
+	const tmName = "IT品牌-重复"
+	// 首次创建成功
+	apiClient.Post(t, "/admin/product/trademark", types.ParamTmSave{
+		TmName:  tmName,
+		LogoUrl: "https://example.com/logo.png",
+	})
+	defer func() {
+		if id := findTmIDByName(t, tmName); id != "" {
+			apiClient.Delete(t, "/admin/product/trademark/"+id)
+		}
+	}()
+	// 二次创建同名应失败
+	apiClient.Call(t, "POST", "/admin/product/trademark", types.ParamTmSave{
+		TmName:  tmName,
+		LogoUrl: "https://example.com/logo.png",
+	}, http.StatusOK, int(result.CodeTrademarkErr))
 }
