@@ -5,3 +5,4 @@ import App from './App.vue'
 
 const app = createApp(App)
 app.component('SvgIcon', SvgIcon) // ← 注册为全局组件
+app.mount('#app')
