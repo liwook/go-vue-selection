@@ -14,6 +14,12 @@ pre-commit:
       # 使用 bash -c 包裹以确保 Windows 下 pnpm bin 路径解析正常，避免 'eslint: command not found'
       run: pnpm --filter web exec eslint --fix .
 
+    typecheck:
+      glob: "apps/web/**/*.{ts,vue}"
+      skip_empty: true
+      fail_text: "类型检查未通过（vue-tsc），请根据上方输出修复后再提交。"
+      run: pnpm --filter web exec vue-tsc -b
+
     # stylelint: 暂未安装，后续有 CSS 规范需求时再启用（见第 5 节）
     #   glob: "apps/web/**/*.{vue,css,scss}"
     #   skip_empty: true
