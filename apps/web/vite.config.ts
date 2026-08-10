@@ -6,6 +6,8 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import UnpluginSvgComponent from 'unplugin-svg-component/vite'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -23,6 +25,15 @@ export default defineConfig({
       ],
     }),
     Icons(),
+
+    UnpluginSvgComponent({
+      iconDir: 'src/icons', // 本地 svg 目录
+      prefix: '', // 组件前缀，空=直接用文件名
+      componentName: 'SvgIcon',
+      treeShaking: true,
+      dts: true,
+      dtsDir: 'src',
+})
   ],
 
   css: {
