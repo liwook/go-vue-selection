@@ -4,7 +4,8 @@ import { defineConfig } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -12,14 +13,16 @@ export default defineConfig({
     AutoImport({
       resolvers: [
         ElementPlusResolver({ importStyle: 'sass' }),
+        IconsResolver({ prefix: 'Icon', enabledCollections: ['ep', 'mdi'] }),
       ],
     }),
     Components({
       resolvers: [
         ElementPlusResolver({ importStyle: 'sass' }),
+        IconsResolver({ prefix: 'Icon', enabledCollections: ['ep', 'mdi'] }),
       ],
     }),
-    // 图标按需导入（unplugin-icons）与 UnpluginSvgComponent 见后续步骤
+    Icons(),
   ],
 
   css: {
