@@ -6,10 +6,13 @@ import Icons from 'unplugin-icons/vite'
 import UnpluginSvgComponent from 'unplugin-svg-component/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
   plugins: [
     vue(),
     AutoImport({
@@ -51,4 +54,19 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+
+
+
+    // 仅 pnpm run dev 时生效，pnpm run build:prod 打包时此配置被忽略。
+    // rewrite: 去掉 /api 前缀，与 Nginx 的 proxy_pass 行为一致（proxy_pass 末尾有 / 会剥离 location 路径前缀）
+    server: {
+      proxy: {
+        '/api': {
+          target: env.API_PROXY_TARGET, // 复用 .env 里的地址，不重复维护 IP
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
+  }
 })
