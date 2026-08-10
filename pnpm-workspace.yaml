@@ -3,6 +3,7 @@ packages:
 # pnpm v10+ 默认禁止依赖自动运行构建脚本；lefthook 是 Go 二进制，
 # 其 postinstall 负责同步 Git 钩子，必须显式放行，否则 prepare 钩子会失败。
 allowBuilds:
+  '@parcel/watcher': true
   lefthook: true
 # catalog：在 workspace 级别统一管理依赖版本，避免子包版本漂移（pnpm 9+ 特性）。
 # 子包里用 "catalog:" 引用，见 9.2。

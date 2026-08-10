@@ -21,6 +21,17 @@ export default defineConfig({
     }),
     // 图标按需导入（unplugin-icons）与 UnpluginSvgComponent 见后续步骤
   ],
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @use "@/styles/element/index.scss" as *;
+          @use "@/styles/variables.scss" as *;
+        `,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
