@@ -29,7 +29,7 @@ newproject/
 | 前端 lint + 格式化 | Biome（`.js/.ts/.vue(<script>)`，主力） |
 | 前端模板检查 | ESLint（仅 `.vue` 的 `<template>`） |
 | 样式检查 | 暂未启用（Stylelint 待 CSS 规范需求时接入） |
-| 类型检查 | vue-tsc（纳入 `build`） |
+| 类型检查 | vue-tsc（**提交前拦截**：pre-commit 钩子执行 `vue-tsc -b`；也纳入 `build`） |
 | 提交信息规范 | commitlint（Conventional Commits） |
 | 后端代码检查 | golangci-lint（`.golangci.yml`）+ `gofmt` + `go vet ./...` |
 | 统一 Git 钩子 | lefthook（Go 实现，前后端一起管） |
@@ -135,7 +135,9 @@ chore: 初始化前端工程
 fix: 修复 CORS 跨域问题
 ```
 
-`pre-commit` 钩子会自动并行执行：前端 Biome 检查 + ESLint（仅 `.vue` 模板）+ 后端 `gofmt` 格式化 + `go vet ./...`（golangci-lint 不在钩子里跑，需手动在 `apps/server` 执行）。
+`pre-commit` 钩子会自动并行执行：前端 Biome 检查 + ESLint（仅 `.vue` 模板）+ **`vue-tsc -b` 类型检查（前端 `.ts/.vue` 改动时拦截，类型不过不能提交）** + 后端 `gofmt` 格式化 + `go vet ./...`（golangci-lint 不在钩子里跑，需手动在 `apps/server` 执行）。
+
+> 说明：类型检查仅匹配 `apps/web/**/*.{ts,vue}`，纯后端/文档提交时自动跳过、零等待；`vue-tsc -b` 带增量缓存，首次稍慢、后续 2~10 秒。
 
 ## 分工说明
 
