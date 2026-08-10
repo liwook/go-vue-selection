@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
+
 //创建axios实例
 const request = axios.create({
   baseURL: '/api',
