@@ -1,12 +1,12 @@
 import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
+import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
+import UnpluginSvgComponent from 'unplugin-svg-component/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import UnpluginSvgComponent from 'unplugin-svg-component/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -33,7 +33,7 @@ export default defineConfig({
       treeShaking: true,
       dts: true,
       dtsDir: 'src',
-})
+    }),
   ],
 
   css: {
