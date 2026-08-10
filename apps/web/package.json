@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "@iconify-json/ep": "^1.2.4",
+    "@iconify-json/mdi": "^1.2.3",
     "@types/node": "^24.13.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/tsconfig": "^0.9.1",
@@ -28,6 +30,7 @@
     "sass": "^1.102.0",
     "typescript": "~6.0.2",
     "unplugin-auto-import": "^21.1.0",
+    "unplugin-icons": "^23.0.1",
     "unplugin-vue-components": "^32.1.0",
     "vite": "^8.2.0",
     "vue-eslint-parser": "^10.4.1",
