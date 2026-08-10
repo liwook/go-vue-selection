@@ -56,13 +56,15 @@ export default defineConfig(({ mode }) => {
     },
 
     // 仅 pnpm run dev 时生效，pnpm run build:prod 打包时此配置被忽略。
-    // rewrite: 去掉 /api 前缀，与 Nginx 的 proxy_pass 行为一致（proxy_pass 末尾有 / 会剥离 location 路径前缀）
+    // 后端接口前缀为 /api/v1/，前端 baseURL 用 /api + 请求路径 /v1/... 拼成 /api/v1/...，
+    // 因此代理【不】重写（剥离）/api 前缀，直接原样转发，避免把 /api 误删导致 404。
+    // 生产环境 Nginx 需用 proxy_pass http://backend（末尾不带 /）以保持同样行为。
     server: {
       proxy: {
         '/api': {
           target: env.API_PROXY_TARGET, // 复用 .env 里的地址，不重复维护 IP
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          // 不 rewrite：保留 /api 前缀，转发到后端即 /api/v1/...
         },
       },
     },
