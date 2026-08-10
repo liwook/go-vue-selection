@@ -54,7 +54,7 @@ func (c *APIClient) login(username, password string) error {
 		"password": password,
 	})
 	var resp apiResponse
-	if err := c.do(http.MethodPost, "/admin/acl/index/login", "", bytes.NewReader(body), &resp); err != nil {
+	if err := c.do(http.MethodPost, "/api/v1/acl/index/login", "", bytes.NewReader(body), &resp); err != nil {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {

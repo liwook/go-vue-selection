@@ -15,7 +15,7 @@ func TestTrademarkFlow(t *testing.T) {
 	const tmName = "IT品牌"
 
 	// 1. create
-	apiClient.Post(t, "/admin/product/trademark", types.ParamTmSave{
+	apiClient.Post(t, "/api/v1/product/trademark", types.ParamTmSave{
 		TmName:  tmName,
 		LogoUrl: "https://example.com/logo.png",
 	})
@@ -27,7 +27,7 @@ func TestTrademarkFlow(t *testing.T) {
 	}
 
 	// 3. update
-	apiClient.Put(t, "/admin/product/trademark/"+tmID, types.ParamTmUpdate{
+	apiClient.Put(t, "/api/v1/product/trademark/"+tmID, types.ParamTmUpdate{
 		TmID:    tmID,
 		TmName:  tmName,
 		LogoUrl: "https://example.com/logo2.png",
@@ -39,7 +39,7 @@ func TestTrademarkFlow(t *testing.T) {
 	}
 
 	// 5. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/product/trademark/"+tmID)
+	apiClient.Delete(t, "/api/v1/product/trademark/"+tmID)
 
 	// 6. 删除后不再出现
 	if got := findTmIDByName(t, tmName); got != "" {
@@ -49,7 +49,7 @@ func TestTrademarkFlow(t *testing.T) {
 
 func findTmIDByName(t *testing.T, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/trademark?page=1&limit=50")
+	resp := apiClient.Get(t, "/api/v1/product/trademark?page=1&limit=50")
 	var list types.ResponseTmList
 	resp.decodeData(&list)
 	for _, tm := range list.Records {
@@ -64,17 +64,17 @@ func findTmIDByName(t *testing.T, name string) string {
 func TestTrademarkNegative(t *testing.T) {
 	const tmName = "IT品牌-重复"
 	// 首次创建成功
-	apiClient.Post(t, "/admin/product/trademark", types.ParamTmSave{
+	apiClient.Post(t, "/api/v1/product/trademark", types.ParamTmSave{
 		TmName:  tmName,
 		LogoUrl: "https://example.com/logo.png",
 	})
 	defer func() {
 		if id := findTmIDByName(t, tmName); id != "" {
-			apiClient.Delete(t, "/admin/product/trademark/"+id)
+			apiClient.Delete(t, "/api/v1/product/trademark/"+id)
 		}
 	}()
 	// 二次创建同名应失败
-	apiClient.Call(t, "POST", "/admin/product/trademark", types.ParamTmSave{
+	apiClient.Call(t, "POST", "/api/v1/product/trademark", types.ParamTmSave{
 		TmName:  tmName,
 		LogoUrl: "https://example.com/logo.png",
 	}, http.StatusOK, int(result.CodeTrademarkErr))

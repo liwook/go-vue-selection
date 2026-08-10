@@ -19,7 +19,7 @@ func TestAttrFlow(t *testing.T) {
 	)
 
 	// 1. 准备分类（category2 / category3）
-	apiClient.Post(t, "/admin/product/category2", types.ParamC2Create{
+	apiClient.Post(t, "/api/v1/product/category2", types.ParamC2Create{
 		Name:        c2Name,
 		Category1ID: c1ID,
 	})
@@ -27,7 +27,7 @@ func TestAttrFlow(t *testing.T) {
 	if c2ID == "" {
 		t.Fatalf("created category2 %q not found", c2Name)
 	}
-	apiClient.Post(t, "/admin/product/category3", types.ParamC3Create{
+	apiClient.Post(t, "/api/v1/product/category3", types.ParamC3Create{
 		Name:        c3Name,
 		Category2ID: c2ID,
 	})
@@ -37,7 +37,7 @@ func TestAttrFlow(t *testing.T) {
 	}
 
 	// 2. save attr
-	apiClient.Post(t, "/admin/product/attr", types.Attr{
+	apiClient.Post(t, "/api/v1/product/attr", types.Attr{
 		AttrName:   attrName,
 		CategoryID: c3ID,
 		AttrValueList: []*types.AttrValue{
@@ -52,7 +52,7 @@ func TestAttrFlow(t *testing.T) {
 	}
 
 	// 4. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/product/attr/"+attrID)
+	apiClient.Delete(t, "/api/v1/product/attr/"+attrID)
 
 	// 5. 删除后不再出现
 	if got := findAttrIDByName(t, c1ID, c2ID, c3ID, attrName); got != "" {
@@ -62,7 +62,7 @@ func TestAttrFlow(t *testing.T) {
 
 func findAttrIDByName(t *testing.T, c1, c2, c3, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/attr/"+c1+"/"+c2+"/"+c3)
+	resp := apiClient.Get(t, "/api/v1/product/attr/"+c1+"/"+c2+"/"+c3)
 	var list []*types.Attr
 	resp.decodeData(&list)
 	for _, a := range list {
@@ -75,7 +75,7 @@ func findAttrIDByName(t *testing.T, c1, c2, c3, name string) string {
 
 // TestAttrGetEmpty 验证查询不存在分类下的属性返回空列表（不报错）。
 func TestAttrGetEmpty(t *testing.T) {
-	resp := apiClient.Get(t, "/admin/product/attr/0/0/0")
+	resp := apiClient.Get(t, "/api/v1/product/attr/0/0/0")
 	var list []*types.Attr
 	resp.decodeData(&list)
 	if len(list) != 0 {

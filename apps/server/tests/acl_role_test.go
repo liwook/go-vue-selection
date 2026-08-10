@@ -13,7 +13,7 @@ func TestRoleFlow(t *testing.T) {
 	const roleName = "it_role_tmp"
 
 	// 1. save
-	apiClient.Post(t, "/admin/acl/role", types.ParamRoleSave{
+	apiClient.Post(t, "/api/v1/acl/role", types.ParamRoleSave{
 		RoleName: roleName,
 		Remark:   "integration-test",
 	})
@@ -25,7 +25,7 @@ func TestRoleFlow(t *testing.T) {
 	}
 
 	// 3. update
-	apiClient.Put(t, "/admin/acl/role/"+roleID, types.ParamRoleUpdate{
+	apiClient.Put(t, "/api/v1/acl/role/"+roleID, types.ParamRoleUpdate{
 		RoleID:   roleID,
 		RoleName: roleName,
 		Remark:   "integration-test-updated",
@@ -37,7 +37,7 @@ func TestRoleFlow(t *testing.T) {
 	}
 
 	// 5. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/acl/role/"+roleID)
+	apiClient.Delete(t, "/api/v1/acl/role/"+roleID)
 
 	// 6. 删除后不再出现
 	if got := findRoleIDByName(t, roleName); got != "" {
@@ -48,7 +48,7 @@ func TestRoleFlow(t *testing.T) {
 // findRoleIDByName 从角色列表里按名称查找 roleId（字符串）。
 func findRoleIDByName(t *testing.T, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/acl/role?page=1&limit=50")
+	resp := apiClient.Get(t, "/api/v1/acl/role?page=1&limit=50")
 	var list types.ResponseRoleList
 	resp.decodeData(&list)
 	for _, r := range list.Records {

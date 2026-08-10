@@ -47,7 +47,7 @@ func (c *categoryHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Produce application/json
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category1}
-// @Router /admin/product/category1 [get]
+// @Router /api/v1/product/category1 [get]
 func (c *categoryHandler) GetCategory1(ctx *gin.Context) {
 	data, err := c.categorySvc.GetCategory1(ctx.Request.Context())
 	if err != nil {
@@ -67,7 +67,7 @@ func (c *categoryHandler) GetCategory1(ctx *gin.Context) {
 // @Param category1Id path string true "分类一 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category2}
-// @Router /admin/product/category2/{category1Id} [get]
+// @Router /api/v1/product/category2/{category1Id} [get]
 func (c *categoryHandler) GetCategory2(ctx *gin.Context) {
 	idStr := ctx.Param("category1Id")
 	category1Id := idconv.ToInt64Safe(idStr)
@@ -89,7 +89,7 @@ func (c *categoryHandler) GetCategory2(ctx *gin.Context) {
 // @Param category2Id path string true "分类二 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category3}
-// @Router /admin/product/category3/{category2Id} [get]
+// @Router /api/v1/product/category3/{category2Id} [get]
 func (c *categoryHandler) GetCategory3(ctx *gin.Context) {
 	idStr := ctx.Param("category2Id")
 	category2Id := idconv.ToInt64Safe(idStr)
@@ -111,7 +111,7 @@ func (c *categoryHandler) GetCategory3(ctx *gin.Context) {
 // @Param object body types.ParamC2Create true "二级分类信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.Category2}
-// @Router /admin/product/category2 [post]
+// @Router /api/v1/product/category2 [post]
 func (c *categoryHandler) CreateCategory2(ctx *gin.Context) {
 	p := new(types.ParamC2Create)
 	if err := ctx.ShouldBindJSON(p); err != nil {
@@ -141,7 +141,7 @@ func (c *categoryHandler) CreateCategory2(ctx *gin.Context) {
 // @Param object body types.ParamC3Create true "三级分类信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.Category3}
-// @Router /admin/product/category3 [post]
+// @Router /api/v1/product/category3 [post]
 func (c *categoryHandler) CreateCategory3(ctx *gin.Context) {
 	p := new(types.ParamC3Create)
 	if err := ctx.ShouldBindJSON(p); err != nil {

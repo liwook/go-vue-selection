@@ -61,7 +61,7 @@ func Setup(conf *config.AppConfig, db *gorm.DB) *gin.Engine {
 		c.String(http.StatusOK, "I'm OK!")
 	})
 	// 权限管理路由（登录接口无需 JWT，其余需 JWT 认证）
-	adminAclGroup := r.Group("/admin/acl")
+	adminAclGroup := r.Group("/api/v1/acl")
 	userHandler.RegisterPublicRoutes(adminAclGroup) // 登录在 JWT 中间件之前注册
 	adminAclGroup.Use(middlewares.JWTAuthMiddleware(jwtSvc))
 
@@ -70,7 +70,7 @@ func Setup(conf *config.AppConfig, db *gorm.DB) *gin.Engine {
 	userHandler.RegisterRoutes(adminAclGroup)
 
 	// 商品管理路由（整体需要 JWT 认证）
-	adminProductGroup := r.Group("/admin/product")
+	adminProductGroup := r.Group("/api/v1/product")
 	adminProductGroup.Use(middlewares.JWTAuthMiddleware(jwtSvc))
 
 	categoryHandler.RegisterRoutes(adminProductGroup)

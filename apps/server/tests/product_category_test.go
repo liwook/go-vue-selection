@@ -20,7 +20,7 @@ func TestCategoryFlow(t *testing.T) {
 	)
 
 	// 1. createC2
-	apiClient.Post(t, "/admin/product/category2", types.ParamC2Create{
+	apiClient.Post(t, "/api/v1/product/category2", types.ParamC2Create{
 		Name:        c2Name,
 		Category1ID: c1ID,
 	})
@@ -32,7 +32,7 @@ func TestCategoryFlow(t *testing.T) {
 	}
 
 	// 3. createC3
-	apiClient.Post(t, "/admin/product/category3", types.ParamC3Create{
+	apiClient.Post(t, "/api/v1/product/category3", types.ParamC3Create{
 		Name:        c3Name,
 		Category2ID: c2ID,
 	})
@@ -53,7 +53,7 @@ func TestCategoryFlow(t *testing.T) {
 
 func findC2ByName(t *testing.T, c1ID, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/category2/"+c1ID)
+	resp := apiClient.Get(t, "/api/v1/product/category2/"+c1ID)
 	var list []types.Category2
 	resp.decodeData(&list)
 	for _, c := range list {
@@ -66,7 +66,7 @@ func findC2ByName(t *testing.T, c1ID, name string) string {
 
 func findC3ByName(t *testing.T, c2ID, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/category3/"+c2ID)
+	resp := apiClient.Get(t, "/api/v1/product/category3/"+c2ID)
 	var list []types.Category3
 	resp.decodeData(&list)
 	for _, c := range list {
@@ -80,7 +80,7 @@ func findC3ByName(t *testing.T, c2ID, name string) string {
 // TestCategoryNegative 验证三级分类绑定不存在的父级（外键约束失败）返回分类 DB 错误。
 func TestCategoryNegative(t *testing.T) {
 	// 使用一个不可能存在的二级分类 ID，插入会因外键约束失败
-	apiClient.Call(t, "POST", "/admin/product/category3", types.ParamC3Create{
+	apiClient.Call(t, "POST", "/api/v1/product/category3", types.ParamC3Create{
 		Name:        "IT三级分类-孤儿",
 		Category2ID: "0",
 	}, http.StatusOK, int(result.CodeCategoryDBErr))

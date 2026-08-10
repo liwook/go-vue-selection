@@ -15,7 +15,7 @@ func TestSkuFlow(t *testing.T) {
 	spuID, c3ID, tmID := prepareSpuForTest(t, spuName)
 
 	// 1. save
-	apiClient.Post(t, "/admin/product/sku", types.SkuInfo{
+	apiClient.Post(t, "/api/v1/product/sku", types.SkuInfo{
 		SpuID:       spuID,
 		Category3ID: c3ID,
 		TmID:        tmID,
@@ -35,19 +35,19 @@ func TestSkuFlow(t *testing.T) {
 	}
 
 	// 3. onsale（上架）
-	apiClient.Put(t, "/admin/product/sku/"+skuID+"/onsale", nil)
+	apiClient.Put(t, "/api/v1/product/sku/"+skuID+"/onsale", nil)
 	if got := skuIsSale(t, skuID); got != 1 {
 		t.Fatalf("after onsale expect isSale=1, got=%d", got)
 	}
 
 	// 4. cancelsale（下架）
-	apiClient.Put(t, "/admin/product/sku/"+skuID+"/cancelsale", nil)
+	apiClient.Put(t, "/api/v1/product/sku/"+skuID+"/cancelsale", nil)
 	if got := skuIsSale(t, skuID); got != 0 {
 		t.Fatalf("after cancelsale expect isSale=0, got=%d", got)
 	}
 
 	// 5. info 验证
-	resp := apiClient.Get(t, "/admin/product/sku/"+skuID)
+	resp := apiClient.Get(t, "/api/v1/product/sku/"+skuID)
 	var info types.ResponseSkuInfo
 	resp.decodeData(&info)
 	if info.SkuID != skuID {
@@ -55,7 +55,7 @@ func TestSkuFlow(t *testing.T) {
 	}
 
 	// 6. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/product/sku/"+skuID)
+	apiClient.Delete(t, "/api/v1/product/sku/"+skuID)
 	if got := findSkuIDBySpu(t, spuID); got != "" {
 		t.Fatalf("sku %q should be deleted, but still found", skuID)
 	}
@@ -63,7 +63,7 @@ func TestSkuFlow(t *testing.T) {
 
 func findSkuIDBySpu(t *testing.T, spuID string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/spu/"+spuID+"/sku")
+	resp := apiClient.Get(t, "/api/v1/product/spu/"+spuID+"/sku")
 	var list []*types.ResponseSkuInfo
 	resp.decodeData(&list)
 	if len(list) == 0 {
@@ -74,7 +74,7 @@ func findSkuIDBySpu(t *testing.T, spuID string) string {
 
 func skuIsSale(t *testing.T, skuID string) int8 {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/sku/"+skuID)
+	resp := apiClient.Get(t, "/api/v1/product/sku/"+skuID)
 	var info types.ResponseSkuInfo
 	resp.decodeData(&info)
 	return info.IsSale
@@ -87,7 +87,7 @@ func TestSkuSaleAttr(t *testing.T) {
 	spuID, c3ID, tmID := prepareSpuForTest(t, spuName)
 
 	// 1. 取 SPU 下的销售属性（含 saleAttrValueId 外键）
-	resp := apiClient.Get(t, "/admin/product/spu/"+spuID+"/saleAttr")
+	resp := apiClient.Get(t, "/api/v1/product/spu/"+spuID+"/saleAttr")
 	var saleAttrs []*types.SpuSaleAttr
 	resp.decodeData(&saleAttrs)
 	if len(saleAttrs) == 0 {
@@ -109,7 +109,7 @@ func TestSkuSaleAttr(t *testing.T) {
 	}
 
 	// 2. save SKU（携带销售属性子表）
-	apiClient.Post(t, "/admin/product/sku", types.SkuInfo{
+	apiClient.Post(t, "/api/v1/product/sku", types.SkuInfo{
 		SpuID:                spuID,
 		Category3ID:          c3ID,
 		TmID:                 tmID,
@@ -125,10 +125,10 @@ func TestSkuSaleAttr(t *testing.T) {
 	if skuID == "" {
 		t.Fatalf("created sku for spu %q not found", spuID)
 	}
-	t.Cleanup(func() { apiClient.Delete(t, "/admin/product/sku/"+skuID) })
+	t.Cleanup(func() { apiClient.Delete(t, "/api/v1/product/sku/"+skuID) })
 
 	// 4. info 验证销售属性子表已写入
-	infoResp := apiClient.Get(t, "/admin/product/sku/"+skuID)
+	infoResp := apiClient.Get(t, "/api/v1/product/sku/"+skuID)
 	var info types.ResponseSkuInfo
 	infoResp.decodeData(&info)
 	if len(info.SkuSaleAttrValueList) == 0 {

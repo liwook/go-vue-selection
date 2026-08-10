@@ -16,7 +16,7 @@ func TestSpuFlow(t *testing.T) {
 	_ = tmID
 
 	// 6. update
-	apiClient.Put(t, "/admin/product/spu/"+spuID, types.Spu{
+	apiClient.Put(t, "/api/v1/product/spu/"+spuID, types.Spu{
 		SpuID:       spuID,
 		SpuName:     spuName,
 		Description: "integration test spu (updated)",
@@ -30,7 +30,7 @@ func TestSpuFlow(t *testing.T) {
 	}
 
 	// 8. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/product/spu/"+spuID)
+	apiClient.Delete(t, "/api/v1/product/spu/"+spuID)
 	if got := findSpuIDByName(t, c3ID, spuName); got != "" {
 		t.Fatalf("spu %q should be deleted, but still found", spuName)
 	}
@@ -48,7 +48,7 @@ func prepareSpuForTest(t *testing.T, spuName string) (spuID, c3ID, tmID string) 
 	tmName := "IT品牌-" + spuName // 不同 spuName 生成不同商标名，避免同库冲突
 
 	// 1. 准备 trademark
-	apiClient.Post(t, "/admin/product/trademark", types.ParamTmSave{
+	apiClient.Post(t, "/api/v1/product/trademark", types.ParamTmSave{
 		TmName:  tmName,
 		LogoUrl: "https://example.com/logo.png",
 	})
@@ -58,7 +58,7 @@ func prepareSpuForTest(t *testing.T, spuName string) (spuID, c3ID, tmID string) 
 	}
 
 	// 2. 准备分类 c3
-	apiClient.Post(t, "/admin/product/category2", types.ParamC2Create{
+	apiClient.Post(t, "/api/v1/product/category2", types.ParamC2Create{
 		Name:        c2Name,
 		Category1ID: c1ID,
 	})
@@ -66,7 +66,7 @@ func prepareSpuForTest(t *testing.T, spuName string) (spuID, c3ID, tmID string) 
 	if c2ID == "" {
 		t.Fatalf("created category2 %q not found", c2Name)
 	}
-	apiClient.Post(t, "/admin/product/category3", types.ParamC3Create{
+	apiClient.Post(t, "/api/v1/product/category3", types.ParamC3Create{
 		Name:        c3Name,
 		Category2ID: c2ID,
 	})
@@ -82,7 +82,7 @@ func prepareSpuForTest(t *testing.T, spuName string) (spuID, c3ID, tmID string) 
 	}
 
 	// 4. save
-	apiClient.Post(t, "/admin/product/spu", types.Spu{
+	apiClient.Post(t, "/api/v1/product/spu", types.Spu{
 		SpuName:     spuName,
 		Description: "integration test spu",
 		Category3ID: c3ID,
@@ -111,7 +111,7 @@ func prepareSpuForTest(t *testing.T, spuName string) (spuID, c3ID, tmID string) 
 
 func firstBaseSaleAttrID(t *testing.T) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/baseSaleAttr")
+	resp := apiClient.Get(t, "/api/v1/product/baseSaleAttr")
 	var list []*types.SaleAttr
 	resp.decodeData(&list)
 	if len(list) == 0 {
@@ -122,7 +122,7 @@ func firstBaseSaleAttrID(t *testing.T) string {
 
 func findSpuIDByName(t *testing.T, c3ID, name string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/product/spu?page=1&limit=50&category3Id="+c3ID)
+	resp := apiClient.Get(t, "/api/v1/product/spu?page=1&limit=50&category3Id="+c3ID)
 	var list types.ResponseSpuList
 	resp.decodeData(&list)
 	for _, s := range list.Records {
@@ -138,10 +138,10 @@ func TestSpuImages(t *testing.T) {
 	const spuName = "IT-SPU-IMG"
 
 	spuID, _, _ := prepareSpuForTest(t, spuName)
-	t.Cleanup(func() { apiClient.Delete(t, "/admin/product/spu/"+spuID) })
+	t.Cleanup(func() { apiClient.Delete(t, "/api/v1/product/spu/"+spuID) })
 
 	// 回查图片列表
-	resp := apiClient.Get(t, "/admin/product/spu/"+spuID+"/images")
+	resp := apiClient.Get(t, "/api/v1/product/spu/"+spuID+"/images")
 	var imgs []*types.SpuImage
 	resp.decodeData(&imgs)
 	if len(imgs) == 0 {

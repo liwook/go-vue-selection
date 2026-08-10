@@ -51,7 +51,7 @@ func (s *skuHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Param object body types.SkuInfo true "SKU信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/sku [post]
+// @Router /api/v1/product/sku [post]
 func (s *skuHandler) SaveSkuInfo(c *gin.Context) {
 	p := new(types.SkuInfo)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -78,7 +78,7 @@ func (s *skuHandler) SaveSkuInfo(c *gin.Context) {
 // @Param spuId path string true "SPU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.ResponseSkuInfo}
-// @Router /admin/product/spu/{spuId}/sku [get]
+// @Router /api/v1/product/spu/{spuId}/sku [get]
 func (s *skuHandler) FindBySpuId(c *gin.Context) {
 	idStr := c.Param("spuId")
 	spuId := idconv.ToInt64Safe(idStr)
@@ -102,7 +102,7 @@ func (s *skuHandler) FindBySpuId(c *gin.Context) {
 // @Param limit query int true "每页记录数"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseSkuInfoList}
-// @Router /admin/product/sku [get]
+// @Router /api/v1/product/sku [get]
 func (s *skuHandler) GetSkuList(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -126,7 +126,7 @@ func (s *skuHandler) GetSkuList(c *gin.Context) {
 // @Param skuId path string true "SKU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/sku/{skuId}/onsale [put]
+// @Router /api/v1/product/sku/{skuId}/onsale [put]
 func (s *skuHandler) OnSaleSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -148,7 +148,7 @@ func (s *skuHandler) OnSaleSku(c *gin.Context) {
 // @Param skuId path string true "SKU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/sku/{skuId}/cancelsale [put]
+// @Router /api/v1/product/sku/{skuId}/cancelsale [put]
 func (s *skuHandler) CancelSaleSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -170,7 +170,7 @@ func (s *skuHandler) CancelSaleSku(c *gin.Context) {
 // @Param skuId path string true "SKU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/sku/{skuId} [delete]
+// @Router /api/v1/product/sku/{skuId} [delete]
 func (s *skuHandler) DeleteSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -191,7 +191,7 @@ func (s *skuHandler) DeleteSku(c *gin.Context) {
 // @Param skuId path string true "SKU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseSkuInfo}
-// @Router /admin/product/sku/{skuId} [get]
+// @Router /api/v1/product/sku/{skuId} [get]
 func (s *skuHandler) GetSkuInfo(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)

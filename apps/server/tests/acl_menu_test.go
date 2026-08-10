@@ -17,7 +17,7 @@ func TestMenuFlow(t *testing.T) {
 	)
 
 	// 1. save（一级目录，挂在根下 parentId=0）
-	apiClient.Post(t, "/admin/acl/permission", types.ParamMenuSave{
+	apiClient.Post(t, "/api/v1/acl/permission", types.ParamMenuSave{
 		Name:     menuName,
 		ParentID: "0",
 		CODE:     menuCode,
@@ -32,10 +32,10 @@ func TestMenuFlow(t *testing.T) {
 	}
 
 	// 3. doAssign：把该菜单分配给普通用户角色(role_id=2)
-	apiClient.Post(t, "/admin/acl/permission/role/2", []int64{idconv.ToInt64Safe(menuID)})
+	apiClient.Post(t, "/api/v1/acl/permission/role/2", []int64{idconv.ToInt64Safe(menuID)})
 
 	// 4. update
-	apiClient.Put(t, "/admin/acl/permission/"+menuID, types.ParamMenuUpdate{
+	apiClient.Put(t, "/api/v1/acl/permission/"+menuID, types.ParamMenuUpdate{
 		MenuID:   menuID,
 		Name:     menuName,
 		ParentID: "0",
@@ -49,7 +49,7 @@ func TestMenuFlow(t *testing.T) {
 	}
 
 	// 6. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/acl/permission/"+menuID)
+	apiClient.Delete(t, "/api/v1/acl/permission/"+menuID)
 
 	// 7. 删除后不再出现
 	if got := findMenuIDByCode(t, menuCode); got != "" {
@@ -60,7 +60,7 @@ func TestMenuFlow(t *testing.T) {
 // findMenuIDByCode 在菜单树里按 code 递归查找 menuId。
 func findMenuIDByCode(t *testing.T, code string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/acl/permission")
+	resp := apiClient.Get(t, "/api/v1/acl/permission")
 	var menus []types.Menu
 	resp.decodeData(&menus)
 	return walkMenu(menus, code)

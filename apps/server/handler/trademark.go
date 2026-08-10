@@ -47,7 +47,7 @@ func (t *trademarkHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Param object body types.ParamTmSave true "品牌信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/trademark [post]
+// @Router /api/v1/product/trademark [post]
 func (t *trademarkHandler) CreateTrademark(c *gin.Context) {
 	// 1. 获取参数及参数校验
 	p := new(types.ParamTmSave)
@@ -79,7 +79,7 @@ func (t *trademarkHandler) CreateTrademark(c *gin.Context) {
 // @Param limit query int true "每页记录数"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseTmList}
-// @Router /admin/product/trademark [get]
+// @Router /api/v1/product/trademark [get]
 func (t *trademarkHandler) GetTrademark(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -104,7 +104,7 @@ func (t *trademarkHandler) GetTrademark(c *gin.Context) {
 // @Param object body types.ParamTmUpdate true "品牌信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/trademark/{trademarkId} [put]
+// @Router /api/v1/product/trademark/{trademarkId} [put]
 func (t *trademarkHandler) UpdateTrademark(c *gin.Context) {
 	// 1. 获取参数及参数校验
 	p := new(types.ParamTmUpdate)
@@ -138,7 +138,7 @@ func (t *trademarkHandler) UpdateTrademark(c *gin.Context) {
 // @Param trademarkId path string true "品牌 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/trademark/{trademarkId} [delete]
+// @Router /api/v1/product/trademark/{trademarkId} [delete]
 func (t *trademarkHandler) DeleteTrademark(c *gin.Context) {
 	idStr := c.Param("trademarkId")
 	tmId := idconv.ToInt64Safe(idStr)
@@ -160,7 +160,7 @@ func (t *trademarkHandler) DeleteTrademark(c *gin.Context) {
 // @Produce application/json
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Trademark}
-// @Router /admin/product/trademark/all [get]
+// @Router /api/v1/product/trademark/all [get]
 func (t *trademarkHandler) GetAllTrademarkList(c *gin.Context) {
 	data, err := t.tmSvc.GetAllTrademarkList(c.Request.Context())
 	if err != nil {

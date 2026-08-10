@@ -51,7 +51,7 @@ func (s *spuHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Produce application/json
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.SaleAttr}
-// @Router /admin/product/baseSaleAttr [get]
+// @Router /api/v1/product/baseSaleAttr [get]
 func (s *spuHandler) GetSaleAttrList(c *gin.Context) {
 	saleAttrList, err := s.spuSvc.GetSaleAttrList(c.Request.Context())
 	if err != nil {
@@ -70,7 +70,7 @@ func (s *spuHandler) GetSaleAttrList(c *gin.Context) {
 // @Param object body types.Spu true "SPU信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/spu [post]
+// @Router /api/v1/product/spu [post]
 func (s *spuHandler) SaveSpuInfo(c *gin.Context) {
 	p := new(types.Spu)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -99,7 +99,7 @@ func (s *spuHandler) SaveSpuInfo(c *gin.Context) {
 // @Param category3Id query int true "三级分类 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseSpuList}
-// @Router /admin/product/spu [get]
+// @Router /api/v1/product/spu [get]
 func (s *spuHandler) GetSpuList(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -126,7 +126,7 @@ func (s *spuHandler) GetSpuList(c *gin.Context) {
 // @Param spuId path string true "SPU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.SpuImage}
-// @Router /admin/product/spu/{spuId}/images [get]
+// @Router /api/v1/product/spu/{spuId}/images [get]
 func (s *spuHandler) GetSpuImageList(c *gin.Context) {
 	idStr := c.Param("spuId")
 	spuId := idconv.ToInt64Safe(idStr)
@@ -147,7 +147,7 @@ func (s *spuHandler) GetSpuImageList(c *gin.Context) {
 // @Param spuId path string true "SPU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.SpuSaleAttr}
-// @Router /admin/product/spu/{spuId}/saleAttr [get]
+// @Router /api/v1/product/spu/{spuId}/saleAttr [get]
 func (s *spuHandler) GetSpuSaleAttrList(c *gin.Context) {
 	idStr := c.Param("spuId")
 	spuId := idconv.ToInt64Safe(idStr)
@@ -169,7 +169,7 @@ func (s *spuHandler) GetSpuSaleAttrList(c *gin.Context) {
 // @Param object body types.Spu true "SPU信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/spu/{spuId} [put]
+// @Router /api/v1/product/spu/{spuId} [put]
 func (s *spuHandler) UpdateSpuInfo(c *gin.Context) {
 	p := new(types.Spu)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -198,7 +198,7 @@ func (s *spuHandler) UpdateSpuInfo(c *gin.Context) {
 // @Param spuId path string true "SPU ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/spu/{spuId} [delete]
+// @Router /api/v1/product/spu/{spuId} [delete]
 func (s *spuHandler) DeleteSpu(c *gin.Context) {
 	idStr := c.Param("spuId")
 	spuId := idconv.ToInt64Safe(idStr)

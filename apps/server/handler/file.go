@@ -35,7 +35,7 @@ func (f *fileHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Param file formData file true "文件"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=string}
-// @Router /admin/product/file/upload [post]
+// @Router /api/v1/product/file/upload [post]
 func (f *fileHandler) FileUpload(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {

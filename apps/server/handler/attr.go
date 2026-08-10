@@ -45,7 +45,7 @@ func (a *attrHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Param object body types.Attr true "属性信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/attr [post]
+// @Router /api/v1/product/attr [post]
 func (a *attrHandler) SaveAttrInfo(c *gin.Context) {
 	p := new(types.Attr)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -87,7 +87,7 @@ func (a *attrHandler) SaveAttrInfo(c *gin.Context) {
 // @Param category3Id path string true "分类三 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Attr}
-// @Router /admin/product/attr/{category1Id}/{category2Id}/{category3Id} [get]
+// @Router /api/v1/product/attr/{category1Id}/{category2Id}/{category3Id} [get]
 func (a *attrHandler) GetAttr(c *gin.Context) {
 	c1Id, c2Id, c3Id, err := getAllCategoryID(c)
 	if err != nil {
@@ -114,7 +114,7 @@ func (a *attrHandler) GetAttr(c *gin.Context) {
 // @Param attrId path string true "属性 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/product/attr/{attrId} [delete]
+// @Router /api/v1/product/attr/{attrId} [delete]
 func (a *attrHandler) DeleteAttr(c *gin.Context) {
 	idStr := c.Param("attrId")
 	attrId := idconv.ToInt64Safe(idStr)

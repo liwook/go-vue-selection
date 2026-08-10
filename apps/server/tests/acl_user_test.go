@@ -19,7 +19,7 @@ func TestUserFlow(t *testing.T) {
 	)
 
 	// 1. signup
-	apiClient.Post(t, "/admin/acl/user", types.ParamUserSignUp{
+	apiClient.Post(t, "/api/v1/acl/user", types.ParamUserSignUp{
 		Username: username,
 		Name:     name,
 		Password: "111111",
@@ -32,18 +32,18 @@ func TestUserFlow(t *testing.T) {
 	}
 
 	// 3. assignRole：分配普通用户角色(role_id=2)
-	apiClient.Post(t, "/admin/acl/user/"+userID+"/role", types.ParamDoAssignRole{
+	apiClient.Post(t, "/api/v1/acl/user/"+userID+"/role", types.ParamDoAssignRole{
 		UserID:     userID,
 		RoleIDList: []string{"2"},
 	})
 
 	// 4. lock（禁用）
-	apiClient.Post(t, "/admin/acl/user/lock", types.ParamUserLock{
+	apiClient.Post(t, "/api/v1/acl/user/lock", types.ParamUserLock{
 		UserID: userID,
 		Status: false,
 	})
 	// 5. unlock（恢复）
-	apiClient.Post(t, "/admin/acl/user/lock", types.ParamUserLock{
+	apiClient.Post(t, "/api/v1/acl/user/lock", types.ParamUserLock{
 		UserID: userID,
 		Status: true,
 	})
@@ -54,7 +54,7 @@ func TestUserFlow(t *testing.T) {
 	}
 
 	// 7. delete（同时作为清理）
-	apiClient.Delete(t, "/admin/acl/user/"+userID)
+	apiClient.Delete(t, "/api/v1/acl/user/"+userID)
 
 	// 8. 删除后不再出现
 	if got := findUserIDByUsername(t, username); got != "" {
@@ -69,7 +69,7 @@ func TestUserDeleteSelf(t *testing.T) {
 		t.Fatalf("cannot resolve admin userId")
 	}
 	// 期望：HTTP 200（业务错误不触发 5xx）+ 业务 code=CodeNoPermission
-	apiClient.Call(t, "DELETE", "/admin/acl/user/"+adminID, nil,
+	apiClient.Call(t, "DELETE", "/api/v1/acl/user/"+adminID, nil,
 		http.StatusOK, int(result.CodeNoPermission))
 }
 
@@ -81,16 +81,16 @@ func TestUserLoginNegative(t *testing.T) {
 	)
 	// 预置一个已知用户
 	userID := signupUser(t, username, password)
-	t.Cleanup(func() { apiClient.Delete(t, "/admin/acl/user/"+userID) })
+	t.Cleanup(func() { apiClient.Delete(t, "/api/v1/acl/user/"+userID) })
 
 	// 错误密码：HTTP 200 + 业务 CodeInvalidPassword
-	apiClient.Call(t, "POST", "/admin/acl/index/login", types.ParamUserLogin{
+	apiClient.Call(t, "POST", "/api/v1/acl/index/login", types.ParamUserLogin{
 		Username: username,
 		Password: "wrong-password",
 	}, http.StatusOK, int(result.CodeInvalidPassword))
 
 	// 正确密码：应成功并返回 token
-	resp := apiClient.Call(t, "POST", "/admin/acl/index/login", types.ParamUserLogin{
+	resp := apiClient.Call(t, "POST", "/api/v1/acl/index/login", types.ParamUserLogin{
 		Username: username,
 		Password: password,
 	}, http.StatusOK, int(result.CodeSuccess))
@@ -106,10 +106,10 @@ func TestUserLogout(t *testing.T) {
 		password = "111111"
 	)
 	userID := signupUser(t, username, password)
-	t.Cleanup(func() { apiClient.Delete(t, "/admin/acl/user/"+userID) })
+	t.Cleanup(func() { apiClient.Delete(t, "/api/v1/acl/user/"+userID) })
 
 	// 携带 admin token 登出（登出接口仅校验 token 有效性）
-	apiClient.Post(t, "/admin/acl/index/logout", nil)
+	apiClient.Post(t, "/api/v1/acl/index/logout", nil)
 }
 
 // TestUserToAssign 验证查询某用户可分配角色列表接口（GET /user/:userId/role）。
@@ -118,7 +118,7 @@ func TestUserToAssign(t *testing.T) {
 	if adminID == "" {
 		t.Fatalf("cannot resolve admin userId")
 	}
-	resp := apiClient.Get(t, "/admin/acl/user/"+adminID+"/role")
+	resp := apiClient.Get(t, "/api/v1/acl/user/"+adminID+"/role")
 	var toAssign types.ResponseToAssignRole
 	resp.decodeData(&toAssign)
 	if len(toAssign.AllRolesList) == 0 {
@@ -133,26 +133,26 @@ func TestUserLockThenLoginDenied(t *testing.T) {
 		password = "111111"
 	)
 	userID := signupUser(t, username, password)
-	t.Cleanup(func() { apiClient.Delete(t, "/admin/acl/user/"+userID) })
+	t.Cleanup(func() { apiClient.Delete(t, "/api/v1/acl/user/"+userID) })
 
 	// 锁定
-	apiClient.Post(t, "/admin/acl/user/lock", types.ParamUserLock{
+	apiClient.Post(t, "/api/v1/acl/user/lock", types.ParamUserLock{
 		UserID: userID,
 		Status: false,
 	})
 	// 锁定后登录应被拒绝（业务码与密码错误一致，避免泄露账号状态）
-	apiClient.Call(t, "POST", "/admin/acl/index/login", types.ParamUserLogin{
+	apiClient.Call(t, "POST", "/api/v1/acl/index/login", types.ParamUserLogin{
 		Username: username,
 		Password: password,
 	}, http.StatusOK, int(result.CodeInvalidPassword))
 
 	// 解锁
-	apiClient.Post(t, "/admin/acl/user/lock", types.ParamUserLock{
+	apiClient.Post(t, "/api/v1/acl/user/lock", types.ParamUserLock{
 		UserID: userID,
 		Status: true,
 	})
 	// 解锁后登录应成功
-	resp := apiClient.Call(t, "POST", "/admin/acl/index/login", types.ParamUserLogin{
+	resp := apiClient.Call(t, "POST", "/api/v1/acl/index/login", types.ParamUserLogin{
 		Username: username,
 		Password: password,
 	}, http.StatusOK, int(result.CodeSuccess))
@@ -164,7 +164,7 @@ func TestUserLockThenLoginDenied(t *testing.T) {
 // signupUser 注册一个临时用户并返回其 userId。
 func signupUser(t *testing.T, username, password string) string {
 	t.Helper()
-	apiClient.Post(t, "/admin/acl/user", types.ParamUserSignUp{
+	apiClient.Post(t, "/api/v1/acl/user", types.ParamUserSignUp{
 		Username: username,
 		Name:     username,
 		Password: password,
@@ -195,7 +195,7 @@ func adminUserID(t *testing.T) string {
 // findUserIDByUsername 从用户列表按 username 反查 userId。
 func findUserIDByUsername(t *testing.T, username string) string {
 	t.Helper()
-	resp := apiClient.Get(t, "/admin/acl/user?page=1&limit=50")
+	resp := apiClient.Get(t, "/api/v1/acl/user?page=1&limit=50")
 	var list types.ResponseUserList
 	resp.decodeData(&list)
 	for _, u := range list.Records {

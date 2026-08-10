@@ -47,7 +47,7 @@ func (r *roleHandler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Param roleName query string false "角色名"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseRoleList}
-// @Router /admin/acl/role [get]
+// @Router /api/v1/acl/role [get]
 func (r *roleHandler) GetRole(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -73,7 +73,7 @@ func (r *roleHandler) GetRole(c *gin.Context) {
 // @Param object body types.ParamRoleSave true "角色信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/acl/role [post]
+// @Router /api/v1/acl/role [post]
 func (r *roleHandler) SaveRole(c *gin.Context) {
 	p := new(types.ParamRoleSave)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -101,7 +101,7 @@ func (r *roleHandler) SaveRole(c *gin.Context) {
 // @Param object body types.ParamRoleUpdate true "角色信息"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/acl/role/{roleId} [put]
+// @Router /api/v1/acl/role/{roleId} [put]
 func (r *roleHandler) UpdateRole(c *gin.Context) {
 	p := new(types.ParamRoleUpdate)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -128,7 +128,7 @@ func (r *roleHandler) UpdateRole(c *gin.Context) {
 // @Param roleId path string true "角色 ID"
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
-// @Router /admin/acl/role/{roleId} [delete]
+// @Router /api/v1/acl/role/{roleId} [delete]
 func (r *roleHandler) DeleteRole(c *gin.Context) {
 	idStr := c.Param("roleId")
 	roleId := idconv.ToInt64Safe(idStr)

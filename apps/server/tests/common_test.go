@@ -36,7 +36,7 @@ func rawCall(t *testing.T, method, path, authHeader string) apiResponse {
 
 // TestCommonNoRoute 验证访问不存在的路由返回 CodeNoRoute（兜底）。
 func TestCommonNoRoute(t *testing.T) {
-	ar := rawCall(t, http.MethodGet, "/admin/acl/nonexist", "Bearer "+apiClient.token)
+	ar := rawCall(t, http.MethodGet, "/api/v1/acl/nonexist", "Bearer "+apiClient.token)
 	if ar.StatusCode != http.StatusOK {
 		t.Fatalf("expect HTTP 200, got %d", ar.StatusCode)
 	}
@@ -47,7 +47,7 @@ func TestCommonNoRoute(t *testing.T) {
 
 // TestCommonAuthMissing 验证缺失 Authorization 头访问受保护接口返回 CodeNeedLogin。
 func TestCommonAuthMissing(t *testing.T) {
-	ar := rawCall(t, http.MethodGet, "/admin/acl/user/info", "")
+	ar := rawCall(t, http.MethodGet, "/api/v1/acl/user/info", "")
 	if ar.StatusCode != http.StatusOK {
 		t.Fatalf("expect HTTP 200, got %d", ar.StatusCode)
 	}
@@ -58,7 +58,7 @@ func TestCommonAuthMissing(t *testing.T) {
 
 // TestCommonAuthInvalid 验证伪造/失效的 token 返回 CodeInvalidToken。
 func TestCommonAuthInvalid(t *testing.T) {
-	ar := rawCall(t, http.MethodGet, "/admin/acl/user/info", "Bearer not-a-valid-token")
+	ar := rawCall(t, http.MethodGet, "/api/v1/acl/user/info", "Bearer not-a-valid-token")
 	if ar.StatusCode != http.StatusOK {
 		t.Fatalf("expect HTTP 200, got %d", ar.StatusCode)
 	}
@@ -69,7 +69,7 @@ func TestCommonAuthInvalid(t *testing.T) {
 
 // TestCommonCORS 验证跨域预检请求返回 204 并携带 Access-Control-Allow-Origin。
 func TestCommonCORS(t *testing.T) {
-	req, err := http.NewRequest(http.MethodOptions, apiClient.baseURL+"/admin/product/trademark", nil)
+	req, err := http.NewRequest(http.MethodOptions, apiClient.baseURL+"/api/v1/product/trademark", nil)
 	if err != nil {
 		t.Fatalf("new request: %v", err)
 	}

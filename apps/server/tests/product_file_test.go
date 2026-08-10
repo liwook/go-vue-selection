@@ -19,7 +19,7 @@ func TestFileUpload(t *testing.T) {
 	}
 
 	// 2. 上传（multipart，字段名 file）
-	resp := apiClient.Upload(t, "/admin/product/file/upload", "file", src)
+	resp := apiClient.Upload(t, "/api/v1/product/file/upload", "file", src)
 
 	// 3. 断言返回 data 为文件 URL（实际返回形如 /api/img/日期/文件名.png）
 	var url string
