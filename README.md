@@ -53,6 +53,11 @@ pnpm install
 # 2. 启动前端开发服务器（5173）
 pnpm dev
 
+# 前端已提交由后端 swagger.json 生成的类型文件 src/api/schema.d.ts，
+# 因此 clone 后无需额外步骤即可 pnpm dev 运行。
+# 仅当后端接口变动、重新 make swagger 后，才需在前端重跑以同步类型：
+cd apps/web && pnpm api:gen   # Swagger 2.0 → OpenAPI 3.0 → schema.d.ts
+
 # 3. 后端启动方式（二选一）
 
 # 方式 A：本地直接运行（需已装 Go，且存在 apps/server/etc/config.yaml）

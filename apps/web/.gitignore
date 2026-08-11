@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 代码生成中间产物：由 api:gen 从后端 swagger.json 转换得到，最终消费的是 schema.d.ts
+src/api/openapi.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
