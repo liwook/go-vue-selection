@@ -42,6 +42,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -83,6 +92,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -122,6 +140,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -152,6 +179,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -196,6 +232,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -227,6 +272,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -277,6 +331,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         post?: never;
@@ -305,6 +368,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -352,6 +424,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -382,6 +463,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -432,6 +522,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         post?: never;
@@ -460,6 +559,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -507,6 +615,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         /**
@@ -536,6 +653,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -569,6 +695,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         /**
@@ -593,6 +728,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -631,6 +775,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.ResponseUserInfo"];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -681,6 +834,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -726,6 +888,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         options?: never;
@@ -767,6 +938,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -800,6 +980,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -848,6 +1037,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -891,6 +1089,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -938,6 +1145,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -979,6 +1195,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1018,6 +1243,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.Category1"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1068,6 +1302,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -1108,6 +1351,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.Category2"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1158,6 +1410,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -1198,6 +1459,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.Category3"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1253,6 +1523,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         delete?: never;
@@ -1297,6 +1576,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1327,6 +1615,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1371,6 +1668,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1400,6 +1706,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1444,6 +1759,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         post?: never;
@@ -1486,6 +1810,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1535,6 +1868,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1560,6 +1902,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1605,6 +1956,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         post?: never;
@@ -1633,6 +1993,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1674,6 +2043,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.SpuImage"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1720,6 +2098,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1762,6 +2149,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.ResponseSkuInfo"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1810,6 +2206,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         put?: never;
@@ -1840,6 +2245,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1879,6 +2293,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: components["schemas"]["types.Trademark"][];
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
@@ -1931,6 +2354,15 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
+                    };
+                };
             };
         };
         post?: never;
@@ -1959,6 +2391,15 @@ export interface paths {
                         "application/json": components["schemas"]["result.ResponseData"] & {
                             data?: Record<string, never>;
                         };
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["result.ResponseData"];
                     };
                 };
             };
