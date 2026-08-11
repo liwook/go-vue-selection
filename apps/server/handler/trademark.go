@@ -48,6 +48,7 @@ func (t *trademarkHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/trademark [post]
+// @Failure 500 {object} result.ResponseData
 func (t *trademarkHandler) CreateTrademark(c *gin.Context) {
 	// 1. 获取参数及参数校验
 	p := new(types.ParamTmSave)
@@ -80,6 +81,7 @@ func (t *trademarkHandler) CreateTrademark(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseTmList}
 // @Router /api/v1/product/trademark [get]
+// @Failure 500 {object} result.ResponseData
 func (t *trademarkHandler) GetTrademark(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -105,6 +107,7 @@ func (t *trademarkHandler) GetTrademark(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/trademark/{trademarkId} [put]
+// @Failure 500 {object} result.ResponseData
 func (t *trademarkHandler) UpdateTrademark(c *gin.Context) {
 	// 1. 获取参数及参数校验
 	p := new(types.ParamTmUpdate)
@@ -139,6 +142,7 @@ func (t *trademarkHandler) UpdateTrademark(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/trademark/{trademarkId} [delete]
+// @Failure 500 {object} result.ResponseData
 func (t *trademarkHandler) DeleteTrademark(c *gin.Context) {
 	idStr := c.Param("trademarkId")
 	tmId := idconv.ToInt64Safe(idStr)
@@ -161,6 +165,7 @@ func (t *trademarkHandler) DeleteTrademark(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Trademark}
 // @Router /api/v1/product/trademark/all [get]
+// @Failure 500 {object} result.ResponseData
 func (t *trademarkHandler) GetAllTrademarkList(c *gin.Context) {
 	data, err := t.tmSvc.GetAllTrademarkList(c.Request.Context())
 	if err != nil {

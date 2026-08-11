@@ -48,6 +48,7 @@ func (c *categoryHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category1}
 // @Router /api/v1/product/category1 [get]
+// @Failure 500 {object} result.ResponseData
 func (c *categoryHandler) GetCategory1(ctx *gin.Context) {
 	data, err := c.categorySvc.GetCategory1(ctx.Request.Context())
 	if err != nil {
@@ -68,6 +69,7 @@ func (c *categoryHandler) GetCategory1(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category2}
 // @Router /api/v1/product/category2/{category1Id} [get]
+// @Failure 500 {object} result.ResponseData
 func (c *categoryHandler) GetCategory2(ctx *gin.Context) {
 	idStr := ctx.Param("category1Id")
 	category1Id := idconv.ToInt64Safe(idStr)
@@ -90,6 +92,7 @@ func (c *categoryHandler) GetCategory2(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Category3}
 // @Router /api/v1/product/category3/{category2Id} [get]
+// @Failure 500 {object} result.ResponseData
 func (c *categoryHandler) GetCategory3(ctx *gin.Context) {
 	idStr := ctx.Param("category2Id")
 	category2Id := idconv.ToInt64Safe(idStr)
@@ -112,6 +115,7 @@ func (c *categoryHandler) GetCategory3(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.Category2}
 // @Router /api/v1/product/category2 [post]
+// @Failure 500 {object} result.ResponseData
 func (c *categoryHandler) CreateCategory2(ctx *gin.Context) {
 	p := new(types.ParamC2Create)
 	if err := ctx.ShouldBindJSON(p); err != nil {
@@ -142,6 +146,7 @@ func (c *categoryHandler) CreateCategory2(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.Category3}
 // @Router /api/v1/product/category3 [post]
+// @Failure 500 {object} result.ResponseData
 func (c *categoryHandler) CreateCategory3(ctx *gin.Context) {
 	p := new(types.ParamC3Create)
 	if err := ctx.ShouldBindJSON(p); err != nil {

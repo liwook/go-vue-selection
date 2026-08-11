@@ -65,6 +65,7 @@ func (u *userHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Param object body types.ParamUserLogin true "用户登录参数"
 // @Success 200 {object} result.ResponseData{data=string}
 // @Router /api/v1/acl/index/login [post]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) Login(c *gin.Context) {
 	// 1. 获取参数及参数校验
 	p := new(types.ParamUserLogin)
@@ -95,6 +96,7 @@ func (u *userHandler) Login(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=string}
 // @Router /api/v1/acl/user [post]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) SignUp(c *gin.Context) {
 	// 1. 参数校验
 	p := new(types.ParamUserSignUp)
@@ -136,6 +138,7 @@ func (u *userHandler) SignUp(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseUserInfo}
 // @Router /api/v1/acl/user/info [get]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) GetInfo(c *gin.Context) {
 	// 1. 获取当前用户ID
 	userID, err := getCurrentUserID(c)
@@ -163,6 +166,7 @@ func (u *userHandler) GetInfo(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/index/logout [post]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) Logout(c *gin.Context) {
 	// 1. 获取当前用户ID
 	userID, err := getCurrentUserID(c)
@@ -192,6 +196,7 @@ func (u *userHandler) Logout(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseUserList}
 // @Router /api/v1/acl/user [get]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) GetUser(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -218,6 +223,7 @@ func (u *userHandler) GetUser(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/user [put]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) UpdateUser(c *gin.Context) {
 	p := new(types.ParamUserUpdate)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -250,6 +256,7 @@ func (u *userHandler) UpdateUser(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/user/{userId} [delete]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) DeleteUser(c *gin.Context) {
 	idStr := c.Param("userId")
 	targetUserID, err := strconv.ParseInt(idStr, 10, 64)
@@ -290,6 +297,7 @@ func (u *userHandler) DeleteUser(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/user [delete]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) DeleteSelf(c *gin.Context) {
 	// user_id 由 JWT 令牌解析得到，避免前端篡改
 	userID, err := getCurrentUserID(c)
@@ -317,6 +325,7 @@ func (u *userHandler) DeleteSelf(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseToAssignRole}
 // @Router /api/v1/acl/user/{userId}/role [get]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) ToAssign(c *gin.Context) {
 	idStr := c.Param("userId")
 	userId, err := strconv.ParseInt(idStr, 10, 64)
@@ -344,6 +353,7 @@ func (u *userHandler) ToAssign(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/user/{userId}/role [post]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) DoAssignRole(c *gin.Context) {
 	p := new(types.ParamDoAssignRole)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -376,6 +386,7 @@ func (u *userHandler) DoAssignRole(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/user/lock [post]
+// @Failure 500 {object} result.ResponseData
 func (u *userHandler) LockUser(c *gin.Context) {
 	p := new(types.ParamUserLock)
 	if err := c.ShouldBindJSON(p); err != nil {

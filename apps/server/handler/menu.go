@@ -50,6 +50,7 @@ func (m *menuHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Menu}
 // @Router /api/v1/acl/permission [get]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) GetMenu(c *gin.Context) {
 	data, err := m.menuSvc.GetMenu(c.Request.Context())
 	if err != nil {
@@ -70,6 +71,7 @@ func (m *menuHandler) GetMenu(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/permission [post]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) SaveMenu(c *gin.Context) {
 	p := new(types.ParamMenuSave)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -96,6 +98,7 @@ func (m *menuHandler) SaveMenu(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/permission/{permissionId} [put]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) UpdateMenu(c *gin.Context) {
 	p := new(types.ParamMenuUpdate)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -123,6 +126,7 @@ func (m *menuHandler) UpdateMenu(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/permission/{permissionId} [delete]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) DeleteMenu(c *gin.Context) {
 	idStr := c.Param("permissionId")
 	menuId := idconv.ToInt64Safe(idStr)
@@ -145,6 +149,7 @@ func (m *menuHandler) DeleteMenu(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.Menu}
 // @Router /api/v1/acl/permission/role/{roleId} [get]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) ToAssign(c *gin.Context) {
 	idStr := c.Param("roleId")
 	fmt.Println(idStr)
@@ -168,6 +173,7 @@ func (m *menuHandler) ToAssign(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/acl/permission/role/{roleId} [post]
+// @Failure 500 {object} result.ResponseData
 func (m *menuHandler) DoAssign(c *gin.Context) {
 	idStr := c.Param("roleId")
 	roleId := idconv.ToInt64Safe(idStr)

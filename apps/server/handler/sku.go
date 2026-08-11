@@ -52,6 +52,7 @@ func (s *skuHandler) RegisterRoutes(r *gin.RouterGroup) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/sku [post]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) SaveSkuInfo(c *gin.Context) {
 	p := new(types.SkuInfo)
 	if err := c.ShouldBindJSON(p); err != nil {
@@ -79,6 +80,7 @@ func (s *skuHandler) SaveSkuInfo(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=[]types.ResponseSkuInfo}
 // @Router /api/v1/product/spu/{spuId}/sku [get]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) FindBySpuId(c *gin.Context) {
 	idStr := c.Param("spuId")
 	spuId := idconv.ToInt64Safe(idStr)
@@ -103,6 +105,7 @@ func (s *skuHandler) FindBySpuId(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseSkuInfoList}
 // @Router /api/v1/product/sku [get]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) GetSkuList(c *gin.Context) {
 	// 获取分页参数
 	page, size := getPageInfo(c)
@@ -127,6 +130,7 @@ func (s *skuHandler) GetSkuList(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/sku/{skuId}/onsale [put]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) OnSaleSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -149,6 +153,7 @@ func (s *skuHandler) OnSaleSku(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/sku/{skuId}/cancelsale [put]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) CancelSaleSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -171,6 +176,7 @@ func (s *skuHandler) CancelSaleSku(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=object}
 // @Router /api/v1/product/sku/{skuId} [delete]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) DeleteSku(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
@@ -192,6 +198,7 @@ func (s *skuHandler) DeleteSku(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Success 200 {object} result.ResponseData{data=types.ResponseSkuInfo}
 // @Router /api/v1/product/sku/{skuId} [get]
+// @Failure 500 {object} result.ResponseData
 func (s *skuHandler) GetSkuInfo(c *gin.Context) {
 	idStr := c.Param("skuId")
 	skuId := idconv.ToInt64Safe(idStr)
