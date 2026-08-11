@@ -24,26 +24,35 @@ router.beforeEach(async (to, _from, next) => {
       next({ path: '/' }) // 已登录还去登录页？直接打回首页
     } else {
       try {
-        // 已拉过用户信息（menuRoutes 非空）则跳过，避免每次跳转重复请求
-        if (userStore.menuRoutes.length === 0) {
+        // 同一个 session 内只拉一次用户信息并挂载一次动态路由
+        if (!userStore.isRoutesAdded) {
           await userStore.getUserInfo()
+
+          // 按后端 routes 过滤异步路由
+          const userAsyncRoute = filterAsyncRoute(asyncRoutes, userStore.menuRoutes as string[])
+
+          // 逐个 addRoute（动态挂载）
+          userAsyncRoute.forEach((route: RouteRecordRaw) => {
+            router.addRoute(route)
+          })
+          // 最后挂 anyRoute 做 404 兜底（必须在动态路由之后）
+          router.addRoute(anyRoute)
+
+          userStore.isRoutesAdded = true
+
+          // 重新进入目标路由（确保 addRoute 生效后再放行）
+          next({ ...to, replace: true })
+        } else {
+          next()
         }
-
-        // 按后端 routes 过滤异步路由
-        const userAsyncRoute = filterAsyncRoute(asyncRoutes, userStore.menuRoutes as string[])
-
-        // 逐个 addRoute（动态挂载）
-        userAsyncRoute.forEach((route: RouteRecordRaw) => {
-          router.addRoute(route)
-        })
-        // 最后挂 anyRoute 做 404 兜底（必须在动态路由之后）
-        router.addRoute(anyRoute)
-
-        // 重新进入目标路由（确保 addRoute 生效后再放行）
-        next({ ...to, replace: true })
       } catch (error) {
         // 获取用户信息失败（token 失效等）→ 清登录态跳登录
         userStore.token = ''
+        userStore.menuRoutes = []
+        userStore.username = ''
+        userStore.avatar = ''
+        userStore.buttons = []
+        userStore.isRoutesAdded = false
         localStorage.removeItem('token')
         next({ path: '/login' })
       }

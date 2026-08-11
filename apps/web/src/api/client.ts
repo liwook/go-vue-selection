@@ -29,7 +29,7 @@ client.use({
       } else {
         ElMessage({ type: 'error', message: `请求失败（${response.status}）` })
       }
-      return
+      throw new Error(`请求失败（${response.status}）`)
     }
 
     // 业务码错误（HTTP 200 但 body.code !== 200）

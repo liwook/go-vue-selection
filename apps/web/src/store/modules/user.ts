@@ -13,10 +13,11 @@ export const useUserStore = defineStore('User', {
   state: () => {
     return {
       token: localStorage.getItem('token') || '',
-      menuRoutes: [] as string[], // 菜单路由（store 计算好，给 layout 用）
+      menuRoutes: [] as string[], // 菜单路由（后端 menu.code 数组）
       username: '',
       avatar: '',
       buttons: [] as string[], // 按钮权限
+      isRoutesAdded: false, // 动态路由是否已挂载（防止重复 addRoute）
     }
   },
   actions: {
@@ -27,6 +28,11 @@ export const useUserStore = defineStore('User', {
         if (res?.code === 200) {
           const token = res.data as string
           this.token = token
+          this.menuRoutes = []
+          this.username = ''
+          this.avatar = ''
+          this.buttons = []
+          this.isRoutesAdded = false
           localStorage.setItem('token', token)
         } else {
           // 业务失败也 throw，让调用方 catch 到
@@ -67,6 +73,7 @@ export const useUserStore = defineStore('User', {
           this.avatar = ''
           this.buttons = []
           this.menuRoutes = []
+          this.isRoutesAdded = false
           localStorage.removeItem('token')
         } else {
           throw new Error(res?.message || '退出失败')
