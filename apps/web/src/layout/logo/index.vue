@@ -1,5 +1,5 @@
 <template>
-  <div class="logo" v-if="settings.logoShow">
+  <div v-if="settings.logoShow" class="logo">
     <img :src="settings.logo" alt="logo" />
     <p>{{ settings.title }}</p>
   </div>

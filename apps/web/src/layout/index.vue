@@ -8,7 +8,9 @@
 
     <!-- 右侧区域：顶部导航 + 内容区 -->
     <div class="layout_right">
-      <div class="layout_tabbar">顶部导航（占位）</div>
+      <div class="layout_tabbar">
+        顶部导航（占位）
+      </div>
       <div class="layout_main">
         <Main />
       </div>
@@ -19,8 +21,8 @@
 <script setup lang="ts">
 import { constantRoute } from '@/router/routes'
 import Logo from './logo/index.vue'
-import Menu from './menu/index.vue'
 import Main from './main/index.vue'
+import Menu from './menu/index.vue'
 </script>
 
 <style scoped lang="scss">
