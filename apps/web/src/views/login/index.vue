@@ -1,7 +1,9 @@
 <template>
   <div class="login">
     <el-form ref="loginForms" :model="loginForm" :rules="rules" class="login-form">
-      <h1 class="title">登录</h1>
+      <h1 class="title">
+        登录
+      </h1>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" :prefix-icon="User" type="text" placeholder="用户名" />
       </el-form-item>
@@ -31,12 +33,12 @@
 </template>
 
 <script setup lang="ts">
+import { Lock, User } from '@element-plus/icons-vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElNotification } from 'element-plus'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { User, Lock } from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
-import { ElNotification } from 'element-plus'
 
 const useStore = useUserStore()
 const $router = useRouter()
