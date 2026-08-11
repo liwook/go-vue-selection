@@ -3,7 +3,7 @@
     <!-- 左侧菜单 -->
     <div class="layout_slider">
       <Logo />
-      <Menu :menu-list="constantRoute" />
+      <Menu :menu-list="constantRoutes" />
     </div>
 
     <!-- 右侧区域：顶部导航 + 内容区 -->
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { constantRoute } from '@/router/routes'
+import { constantRoutes } from '@/router/routes'
 import Logo from './logo/index.vue'
 import Main from './main/index.vue'
 import Menu from './menu/index.vue'
