@@ -1,5 +1,5 @@
 <template>
-  <div>【占位】内容区</div>
+  <router-view />
 </template>
 
 <script setup lang="ts"></script>
