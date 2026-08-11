@@ -3,16 +3,34 @@ import createClient from 'openapi-fetch'
 import type { paths } from './schema'
 import 'element-plus/es/components/message/style/css'
 
-// 与 utils/request.ts 保持一致的 baseURL，走 vite 的 /api 代理
+// 走 vite 的 /api 代理（见 vite.config 的 server.proxy）
 export const client = createClient<paths>({
   baseUrl: '/api',
 })
 
-// 统一的业务错误码拦截：与 utils/request.ts 的响应拦截逻辑保持一致。
-// 后端在 HTTP 200 的 body 里用 code 字段表达业务结果（200=成功，其余为错误）。
+// 统一的请求/响应拦截（中间件）
 client.use({
+  // ① 请求前注入 token（Bearer）
+  onRequest({ request }) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      request.headers.set('Authorization', `Bearer ${token}`)
+    }
+  },
+
+  // ② 响应拦截：区分 HTTP 错误与业务码错误
   onResponse: async ({ response }) => {
-    // 仅处理 JSON 响应；非 2xx 由 openapi-fetch 抛错，交由调用方 catch。
+    // HTTP 层错误（4xx/5xx）
+    if (!response.ok) {
+      if (response.status === 401) {
+        ElMessage({ type: 'warning', message: '登录已过期，请重新登录' })
+      } else {
+        ElMessage({ type: 'error', message: `请求失败（${response.status}）` })
+      }
+      return
+    }
+
+    // 业务码错误（HTTP 200 但 body.code !== 200）
     const contentType = response.headers.get('content-type') ?? ''
     if (!contentType.includes('application/json')) return
 
@@ -24,5 +42,3 @@ client.use({
     }
   },
 })
-
-export default client
