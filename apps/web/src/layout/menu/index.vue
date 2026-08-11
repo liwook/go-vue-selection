@@ -42,19 +42,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
-import type { Component } from 'vue'
 import {
-  HomeFilled,
-  Histogram,
-  Lock,
-  UserFilled,
-  Menu as MenuIcon,
-  Goods,
-  Stamp,
   Files,
+  Goods,
+  Histogram,
+  HomeFilled,
+  Lock,
+  Menu as MenuIcon,
+  Stamp,
+  UserFilled,
 } from '@element-plus/icons-vue'
+import type { Component } from 'vue'
+import type { RouteRecordRaw } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 // 给递归组件起名字，才能在自己模板里用 <SideMenu> 调用自己
 defineOptions({ name: 'SideMenu' })
@@ -66,7 +66,7 @@ const props = withDefaults(
     parentPath?: string
     isRoot?: boolean
   }>(),
-  { isRoot: true },
+  { isRoot: true, parentPath: '' },
 )
 
 const $router = useRouter()
@@ -75,16 +75,11 @@ const $router = useRouter()
 const isLeaf = (item: RouteRecordRaw) => !item.children || item.children.length <= 1
 
 // 取出真正要展示的那个节点：单子节点时返回它的 child，否则返回自身
-const leaf = (item: RouteRecordRaw) =>
-  item.children?.length === 1 ? item.children[0] : item
+const leaf = (item: RouteRecordRaw) => (item.children?.length === 1 ? item.children[0] : item)
 
 // 拼完整路径：绝对路径直接用，相对路径拼上父级路径
 const resolvePath = (path: string) =>
-  path.startsWith('/')
-    ? path
-    : props.parentPath
-      ? `${props.parentPath}/${path}`
-      : `/${path}`
+  path.startsWith('/') ? path : props.parentPath ? `${props.parentPath}/${path}` : `/${path}`
 
 // 图标映射表：手动 import 再当对象，自动导入扫不到“动态字符串”
 const iconMap: Record<string, Component> = {
@@ -97,8 +92,7 @@ const iconMap: Record<string, Component> = {
   Stamp,
   Files,
 }
-const getIcon = (icon?: string): Component | undefined =>
-  icon ? iconMap[icon] : undefined
+const getIcon = (icon?: string): Component | undefined => (icon ? iconMap[icon] : undefined)
 
 // 点击菜单项跳转
 const goRoute = (path: string) => $router.push(path)
