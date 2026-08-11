@@ -5,6 +5,10 @@ pre-commit:
       glob: "apps/web/**/*.{js,ts,vue,json,css}"
       skip_empty: true
       fail_text: "Biome 检查未通过，请根据上方输出修复后再提交。"
+      # npm_config_ignore_scripts 避免 pnpm exec 触发根 prepare(lefthook install)，
+      # 否则并行执行时多个进程同时 rename .pnpm/lock.yaml 会在 Windows 下 EPERM 竞态失败
+      env:
+        npm_config_ignore_scripts: "true"
       run: pnpm --filter web exec biome check --write .
 
     eslint-vue:
@@ -12,12 +16,16 @@ pre-commit:
       skip_empty: true
       fail_text: "ESLint 检查未通过，请根据上方输出修复后再提交。"
       # 使用 bash -c 包裹以确保 Windows 下 pnpm bin 路径解析正常，避免 'eslint: command not found'
+      env:
+        npm_config_ignore_scripts: "true"
       run: pnpm --filter web exec eslint --fix .
 
     typecheck:
       glob: "apps/web/**/*.{ts,vue}"
       skip_empty: true
       fail_text: "类型检查未通过（vue-tsc），请根据上方输出修复后再提交。"
+      env:
+        npm_config_ignore_scripts: "true"
       run: pnpm --filter web exec vue-tsc -b
 
     # stylelint: 暂未安装，后续有 CSS 规范需求时再启用（见第 5 节）
@@ -57,6 +65,8 @@ pre-commit:
       # 直接由 lefthook 执行（不裹 bash -c）：lefthook 会自动对每个暂存文件加双引号，
       # 正确处理中文/空格路径。Windows Git Bash 下用 bash -c 包裹 pnpm exec 会导致
       # 命令被解析成裸 pnpm（打印帮助并以退出码 1 中止提交）。
+      env:
+        npm_config_ignore_scripts: "true"
       run: pnpm exec markdownlint-cli2 --fix {staged_files}
 
 commit-msg:
