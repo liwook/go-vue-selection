@@ -1,3 +1,4 @@
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 import SvgIcon from './components/SvgIcon/index.vue'
@@ -13,5 +14,8 @@ app.component('SvgIcon', SvgIcon)
 
 // 注册路由
 app.use(router)
+
+// 注册 pinia（store 依赖它，守卫里才能用 useUserStore）
+app.use(createPinia())
 
 app.mount('#app')
