@@ -1,3 +1,12 @@
+// 扩展 RouteMeta：给路由记录附加菜单所需的 title / icon / hidden
+declare module 'vue-router' {
+  interface RouteMeta {
+    title?: string
+    icon?: string
+    hidden?: boolean
+  }
+}
+
 // 对外暴露常量路由（本阶段为静态路由，后续权限阶段会在此基础上筛选）
 export const constantRoute = [
   // 登录页（不挂 Layout，隐藏于菜单）
