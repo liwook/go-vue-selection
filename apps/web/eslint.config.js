@@ -12,6 +12,9 @@ export default [
     languageOptions: {
       globals: { ...globals.browser },
       parser: pluginVue.parser,
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+      },
     },
   },
   ...(Array.isArray(vueRecommended) ? vueRecommended : [vueRecommended]),

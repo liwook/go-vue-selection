@@ -1,8 +1,17 @@
 import { createApp } from 'vue'
-import './style.css'
-import SvgIcon from '~virtual/svg-component' // ← 插件生成的虚拟模块
 import App from './App.vue'
+import SvgIcon from './components/SvgIcon/index.vue'
+import router from './router'
+
+// 样式：全局重置
+import './style.css'
 
 const app = createApp(App)
-app.component('SvgIcon', SvgIcon) // ← 注册为全局组件
+
+// 全局注册图标组件（任意组件内可直接用 <SvgIcon name="xxx" />）
+app.component('SvgIcon', SvgIcon)
+
+// 注册路由
+app.use(router)
+
 app.mount('#app')

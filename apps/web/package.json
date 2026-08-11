@@ -24,6 +24,7 @@
     "@iconify-json/ep": "^1.2.4",
     "@iconify-json/mdi": "^1.2.3",
     "@types/node": "^24.13.3",
+    "@typescript-eslint/parser": "^8.66.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.8.0",
