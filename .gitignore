@@ -41,6 +41,12 @@ apps/server/api/swagger.yaml
 # Go 编译产物（go build 输出）
 apps/server/bin/
 
+# ===================== 自动生成声明文件（unplugin / svg 插件生成，非手写，不入库） =====================
+apps/web/components.d.ts
+apps/web/auto-imports.d.ts
+apps/web/src/svg-component.d.ts
+apps/web/src/svg-component-global.d.ts
+
 # ===================== 编辑器 / 系统 =====================
 .vscode/*
 !.vscode/extensions.json

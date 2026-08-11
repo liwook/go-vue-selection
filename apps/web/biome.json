@@ -6,13 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true,
-    "ignore": [
-      "auto-imports.d.ts",
-      "components.d.ts",
-      "svg-component.d.ts",
-      "svg-component-global.d.ts"
-    ]
+    "ignoreUnknown": true
   },
   "formatter": {
     "enabled": true,
