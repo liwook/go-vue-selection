@@ -1,6 +1,6 @@
+import { ElMessage } from 'element-plus'
 import createClient from 'openapi-fetch'
 import type { paths } from './schema'
-import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
 
 // 与 utils/request.ts 保持一致的 baseURL，走 vite 的 /api 代理
