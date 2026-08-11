@@ -4,8 +4,10 @@ import type { paths } from './schema'
 import 'element-plus/es/components/message/style/css'
 
 // 走 vite 的 /api 代理（见 vite.config 的 server.proxy）
+// baseUrl 留空：请求路径写完整后端路径 /api/v1/...，由 vite 代理原样转发，
+// 同时和 schema.d.ts 里的 paths 键（/api/v1/...）完全一致，类型才能匹配。
 export const client = createClient<paths>({
-  baseUrl: '/api',
+  baseUrl: '',
 })
 
 // 统一的请求/响应拦截（中间件）

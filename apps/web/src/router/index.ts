@@ -1,8 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import { constantRoutes, asyncRoutes, anyRoute } from './routes'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
 import { filterAsyncRoute } from '@/utils/routeFilter'
+import { anyRoute, asyncRoutes, constantRoutes } from './routes'
 
 const router = createRouter({
   // 哈希模式（部署简单，不需要服务器配置）
@@ -24,8 +24,10 @@ router.beforeEach(async (to, _from, next) => {
       next({ path: '/' }) // 已登录还去登录页？直接打回首页
     } else {
       try {
-        // 拉用户信息（含 routes/buttons/name/avatar）
-        await userStore.getUserInfo()
+        // 已拉过用户信息（menuRoutes 非空）则跳过，避免每次跳转重复请求
+        if (userStore.menuRoutes.length === 0) {
+          await userStore.getUserInfo()
+        }
 
         // 按后端 routes 过滤异步路由
         const userAsyncRoute = filterAsyncRoute(asyncRoutes, userStore.menuRoutes as string[])
