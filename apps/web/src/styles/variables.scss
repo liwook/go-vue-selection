@@ -1,7 +1,5 @@
-$sidebar-width: 210px;
-
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+// 布局相关变量
+$base-menu-width: 260px; // 左侧菜单宽度
+$base-menu-min-width: 60px; // 菜单收起时的最小宽度
+$base-logo-height: 60px; // 顶部 logo 区高度
+$base-tabbar-height: 60px; // 顶部导航栏高度
