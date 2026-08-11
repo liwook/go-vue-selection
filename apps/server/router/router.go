@@ -81,7 +81,7 @@ func Setup(conf *config.AppConfig, db *gorm.DB) *gin.Engine {
 	fileHandler.RegisterRoutes(adminProductGroup)
 
 	r.NoRoute(func(c *gin.Context) {
-		result.Error(c, result.CodeNoRoute)
+		result.ErrorWithHTTPStatus(c, result.CodeNoRoute, http.StatusNotFound)
 	})
 	return r
 }

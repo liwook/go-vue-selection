@@ -50,6 +50,17 @@ func ErrorWithMsg(c *gin.Context, code ResCode, msg string) {
 	writeJSON(c, code, msg, nil)
 }
 
+// ErrorWithHTTPStatus 与 Error 一致返回统一响应体，但允许指定 HTTP 状态码。
+// 用于那些错误码属于业务域、却应按 HTTP 语义返回特定状态码的场景，
+// 例如路由未匹配（NoRoute）应返回 404 而非 200，便于网关/前端正确识别。
+func ErrorWithHTTPStatus(c *gin.Context, code ResCode, httpStatus int) {
+	c.JSON(httpStatus, &ResponseData{
+		Code: code,
+		Msg:  code.Msg(),
+		Data: nil,
+	})
+}
+
 // externalMsg 对外接口的系统错误脱敏文案：不暴露 DB/Redis/外部依赖等技术栈细节。
 const externalMaskedMsg = "系统繁忙，请稍后再试"
 
