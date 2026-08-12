@@ -14,10 +14,16 @@ import (
 }
 */
 
+// ResponseData 是统一响应体。
+// 字段上的 binding:"required" 并非用于运行时校验（响应体不会进入 gin 的 binding 校验流程），
+// 而是给 swaggo 文档生成器读取，使其将 code/message/data 写入 OpenAPI schema 的 required 数组，
+// 从而让前端 openapi-typescript 生成的非可选字段（去掉误导性的 ? 可选标记）。
+// 注意：Data 为 any 类型，即便标了 required，反射后仍是空 schema（前端类型为 unknown），
+// 且错误响应中 Data 值为 null，前端仍需对 data 做兜底处理。
 type ResponseData struct {
-	Code ResCode `json:"code"`
-	Msg  string  `json:"message"`
-	Data any     `json:"data"`
+	Code ResCode `json:"code" binding:"required"`
+	Msg  string  `json:"message" binding:"required"`
+	Data any     `json:"data" binding:"required"`
 }
 
 // httpStatusForCode 根据码所属域决定 HTTP 状态码：
