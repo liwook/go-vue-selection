@@ -2416,9 +2416,9 @@ export interface components {
         /** @enum {integer} */
         "result.ResCode": 200 | 990000 | 990001 | 990002 | 990003 | 990004 | 990005 | 110000 | 110000 | 110001 | 110002 | 110003 | 110004 | 110005 | 110064 | 110065 | 110066 | 110067 | 110128 | 110129 | 110130 | 110192 | 110193 | 110194 | 110195 | 120000 | 120000 | 120064 | 120065 | 120066 | 120128 | 120129 | 120192 | 120193 | 120256 | 120257 | 120320 | 120321;
         "result.ResponseData": {
-            code?: components["schemas"]["result.ResCode"];
-            data?: unknown;
-            message?: string;
+            code: components["schemas"]["result.ResCode"];
+            data: unknown;
+            message: string;
         };
         "types.Attr": {
             /** @description 属性ID */
