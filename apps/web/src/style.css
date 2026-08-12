@@ -10,3 +10,8 @@ body,
 #app {
   overflow: hidden;
 }
+
+/* 暗黑模式下兜底页面背景（自定义区域之外的缝隙） */
+html.dark body {
+  background: #000;
+}
