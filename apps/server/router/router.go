@@ -49,7 +49,7 @@ func Setup(conf *config.AppConfig, db *gorm.DB) *gin.Engine {
 
 	// 图片路由设置
 	r.MaxMultipartMemory = 4 << 20 // 4 MiB
-	r.Static("/static", conf.Static.Path)
+	r.Static("/api/static", conf.Static.Path)
 
 	//r.Use(middlewares.GinLogger(), logger.GinRecovery(true), middlewares.RateLimitMiddleware(2*time.Second, 1))
 	r.Use(middlewares.GinLogger(), gin.Recovery(), middlewares.Cors())
