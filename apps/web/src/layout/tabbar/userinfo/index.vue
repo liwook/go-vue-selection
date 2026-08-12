@@ -66,7 +66,7 @@ const logout = async () => {
   outline: none;
 }
 .layout-userinfo-avatar {
-  background: #409eff;
+  background: var(--el-color-primary);
   color: #fff;
 }
 .layout-userinfo-name {

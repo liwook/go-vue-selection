@@ -9,6 +9,11 @@ import './style.css'
 // Element Plus 暗黑模式变量（必须放在自定义 style.css 之前，否则会被业务样式覆盖）
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
+// 应用启动时先恢复用户持久化的主题色，避免刷新后闪回默认蓝
+import { applyStoredPrimaryColor } from '@/utils/theme'
+
+applyStoredPrimaryColor()
+
 const app = createApp(App)
 
 // 全局注册图标组件（任意组件内可直接用 <SvgIcon name="xxx" />）

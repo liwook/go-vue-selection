@@ -26,11 +26,12 @@
 <script setup lang="ts">
 import { FullScreen, Moon, Sunny } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import { setPrimaryColor } from '@/utils/theme'
+import { getStoredPrimaryColor, setPrimaryColor } from '@/utils/theme'
 
 // 用当前 DOM 上的 dark 类初始化，避免刷新后开关状态与页面不同步（可选接 localStorage 持久化）
 const isDark = ref(document.documentElement.classList.contains('dark'))
-const primaryColor = ref('#409EFF')
+// 初始化为持久化主题色，避免刷新后选择器显示与页面实际不一致
+const primaryColor = ref(getStoredPrimaryColor())
 
 // 主题色预设（点开选择器时快速选）
 const predefineColors = ['#409EFF', '#1677ff', '#7265e6', '#28c76f', '#f5222d', '#fa541c']

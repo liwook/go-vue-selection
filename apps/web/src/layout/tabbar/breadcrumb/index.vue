@@ -34,7 +34,7 @@ const goHome = () => $router.push('/home')
 
 <style scoped lang="scss">
 .layout-breadcrumb-link {
-  color: #409eff;
+  color: var(--el-color-primary);
   cursor: pointer;
   font-weight: 500;
   &:hover {

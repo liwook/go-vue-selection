@@ -5,7 +5,6 @@
     :default-active="$route.path"
     background-color="#001529"
     text-color="#fff"
-    active-text-color="#409eff"
   >
     <SideMenu :menu-list="menuList" :parent-path="parentPath" :is-root="false" />
   </el-menu>
