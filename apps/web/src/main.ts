@@ -1,7 +1,7 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import App from './App.vue'
 import SvgIcon from '~virtual/svg-component'
+import App from './App.vue'
 import router from './router'
 
 // 样式：全局重置
