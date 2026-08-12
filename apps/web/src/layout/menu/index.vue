@@ -42,19 +42,9 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Files,
-  Goods,
-  Histogram,
-  HomeFilled,
-  Lock,
-  Menu as MenuIcon,
-  Stamp,
-  UserFilled,
-} from '@element-plus/icons-vue'
-import type { Component } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { getRouteIcon } from '@/utils/icons'
 
 // 给递归组件起名字，才能在自己模板里用 <SideMenu> 调用自己
 defineOptions({ name: 'SideMenu' })
@@ -81,18 +71,8 @@ const leaf = (item: RouteRecordRaw) => (item.children?.length === 1 ? item.child
 const resolvePath = (path: string) =>
   path.startsWith('/') ? path : props.parentPath ? `${props.parentPath}/${path}` : `/${path}`
 
-// 图标映射表：手动 import 再当对象，自动导入扫不到“动态字符串”
-const iconMap: Record<string, Component> = {
-  HomeFilled,
-  Histogram,
-  Lock,
-  UserFilled,
-  Menu: MenuIcon,
-  Goods,
-  Stamp,
-  Files,
-}
-const getIcon = (icon?: string): Component | undefined => (icon ? iconMap[icon] : undefined)
+// 图标统一从 utils/icons 取，避免多处维护
+const getIcon = getRouteIcon
 
 // 点击菜单项跳转
 const goRoute = (path: string) => $router.push(path)
