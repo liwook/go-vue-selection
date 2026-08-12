@@ -62,8 +62,10 @@ const greeting = computed(() => {
 }
 .welcome-illustration {
   display: block;
-  width: 100%;
+  width: 100% !important;
   max-width: 720px;
+  height: auto !important;
+  aspect-ratio: 1024 / 626;
   margin: 0 auto;
 }
 

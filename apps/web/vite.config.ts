@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
         treeShaking: true,
         dts: true,
         dtsDir: 'src',
+        preserveColor: /(welcome|logo)/, // 保留彩色 svg 的原色（不替换为 currentColor）
       }),
     ],
 
