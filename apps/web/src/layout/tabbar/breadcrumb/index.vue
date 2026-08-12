@@ -1,11 +1,19 @@
 <template>
   <el-breadcrumb separator="/">
     <el-breadcrumb-item v-for="item in matched" :key="item.path">
-      <!-- 首页项可点，其余只展示文字 -->
+      <!-- 首页项可点，其余只展示文字；每一级都带图标 -->
       <span v-if="item.meta?.title === '首页'" class="layout-breadcrumb-link" @click="goHome">
+        <el-icon v-if="item.meta?.icon" class="breadcrumb-icon">
+          <component :is="getRouteIcon(item.meta.icon)" />
+        </el-icon>
         {{ item.meta.title }}
       </span>
-      <span v-else class="layout-breadcrumb-text">{{ item.meta.title }}</span>
+      <span v-else class="layout-breadcrumb-text">
+        <el-icon v-if="item.meta?.icon" class="breadcrumb-icon">
+          <component :is="getRouteIcon(item.meta.icon)" />
+        </el-icon>
+        {{ item.meta.title }}
+      </span>
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
@@ -13,6 +21,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getRouteIcon } from '@/utils/icons'
 
 const $route = useRoute()
 const $router = useRouter()
@@ -34,5 +43,9 @@ const goHome = () => $router.push('/home')
 }
 .layout-breadcrumb-text {
   color: #606266;
+}
+
+.breadcrumb-icon {
+  margin-right: 4px;
 }
 </style>
