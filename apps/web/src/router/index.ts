@@ -49,7 +49,7 @@ router.beforeEach(async (to, _from, next) => {
         // 获取用户信息失败（token 失效等）→ 清登录态跳登录
         userStore.token = ''
         userStore.menuRoutes = []
-        userStore.username = ''
+        userStore.name = ''
         userStore.avatar = ''
         userStore.buttons = []
         userStore.isRoutesAdded = false

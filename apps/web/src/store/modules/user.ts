@@ -14,7 +14,7 @@ export const useUserStore = defineStore('User', () => {
   // state
   const token = ref(localStorage.getItem('token') || '')
   const menuRoutes = ref<string[]>([]) // 菜单路由（后端 menu.code 数组）
-  const username = ref('')
+  const name = ref('') // 用户名（对应后端 data.name）
   const avatar = ref('')
   const buttons = ref<string[]>([]) // 按钮权限
   const isRoutesAdded = ref(false) // 动态路由是否已挂载（防止重复 addRoute）
@@ -22,7 +22,7 @@ export const useUserStore = defineStore('User', () => {
   // 重置权限态：登录成功 / 退出时调用，确保用新账号重新拉取并挂载动态路由
   function resetUserState() {
     token.value = ''
-    username.value = ''
+    name.value = ''
     avatar.value = ''
     buttons.value = []
     menuRoutes.value = []
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('User', () => {
     if (res?.code !== 200) throw new Error(res?.message || '获取用户信息失败')
     const data = res.data as ResponseUserInfo | undefined
     if (data) {
-      username.value = data.name ?? ''
+      name.value = data.name ?? ''
       avatar.value = data.avatar ?? ''
       buttons.value = data.buttons ?? []
       menuRoutes.value = data.routes ?? [] // 原始 routes（menu.code 数组）
@@ -64,7 +64,7 @@ export const useUserStore = defineStore('User', () => {
   return {
     token,
     menuRoutes,
-    username,
+    name,
     avatar,
     buttons,
     isRoutesAdded,
