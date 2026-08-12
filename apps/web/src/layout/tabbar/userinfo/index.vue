@@ -28,9 +28,11 @@
 <script setup lang="ts">
 import { SwitchButton, User } from '@element-plus/icons-vue'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 // 显示名：取用户昵称 name，未登录/接口未通时兜底 admin
 const displayName = computed(() => userStore.name ?? 'admin')
@@ -48,9 +50,10 @@ const greeting = computed(() => {
 // 个人信息页后续阶段(ACL)再做，这里先占位
 const goProfile = () => {}
 
-// 退出登录：调 userStore.userLogout（清 token/状态；由路由守卫跳回登录页）
+// 退出登录：清 token/状态后主动跳回登录页
 const logout = async () => {
   await userStore.userLogout()
+  await router.push('/login')
 }
 </script>
 
