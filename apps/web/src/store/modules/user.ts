@@ -61,5 +61,15 @@ export const useUserStore = defineStore('User', () => {
     localStorage.removeItem('token')
   }
 
-  return { token, menuRoutes, username, avatar, buttons, isRoutesAdded, userLogin, getUserInfo, userLogout }
+  return {
+    token,
+    menuRoutes,
+    username,
+    avatar,
+    buttons,
+    isRoutesAdded,
+    userLogin,
+    getUserInfo,
+    userLogout,
+  }
 })
