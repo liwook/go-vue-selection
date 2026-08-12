@@ -1,12 +1,15 @@
 <template>
   <el-card class="home-card" shadow="hover">
     <div class="greeting">
-      <el-avatar :size="64" :src="avatarUrl" />
+      <el-avatar :size="96" :src="avatarUrl" />
       <div class="text">
         <h2>{{ greeting }}，{{ userStore.name || '游客' }}</h2>
         <p>欢迎使用选课管理系统</p>
       </div>
     </div>
+  </el-card>
+  <el-card class="welcome-card" shadow="hover" :body-style="{ padding: '0' }">
+    <SvgIcon name="welcome" class="welcome-illustration" />
   </el-card>
 </template>
 
@@ -36,19 +39,32 @@ const greeting = computed(() => {
 
 <style scoped lang="scss">
 .home-card {
-  max-width: 560px;
-  margin: 24px auto;
+  max-width: 100%;
+  margin: 24px;
+}
+.welcome-card {
+  max-width: 720px;
+  margin: 16px auto 24px;
 }
 .greeting {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
 }
 .text h2 {
-  margin: 0 0 4px;
+  margin: 0 0 8px;
+  font-size: 26px;
 }
 .text p {
   margin: 0;
+  font-size: 16px;
   color: var(--el-text-color-secondary);
 }
+.welcome-illustration {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 </style>
