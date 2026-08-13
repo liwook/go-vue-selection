@@ -26,17 +26,21 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="save">确定</el-button>
+        <el-button @click="dialogVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" :loading="saving" @click="save">
+          确定
+        </el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { computed, ref, watch } from 'vue'
 import { client } from '@/api/client'
 import type { components } from '@/api/schema'
 import CategoryCascader from '@/components/CategoryCascader.vue'
@@ -56,7 +60,9 @@ const saving = ref(false)
 
 // 当前应展示/新增的层级：选了二级→展示三级；选了一级→展示二级；都没选→展示一级
 const level = computed(() => (c3Id.value ? 3 : c2Id.value ? 2 : 1))
-const addLabel = computed(() => (level.value === 1 ? '一级分类' : level.value === 2 ? '二级分类' : '三级分类'))
+const addLabel = computed(() =>
+  level.value === 1 ? '一级分类' : level.value === 2 ? '二级分类' : '三级分类',
+)
 // 一级分类由系统预置，无新增接口；选了一级才能新增二级，选二级才能新增三级
 const canAdd = computed(() => level.value >= 2)
 
@@ -64,13 +70,19 @@ async function loadTable() {
   loading.value = true
   try {
     if (level.value === 2) {
-      tableData.value = (await client.GET('/api/v1/product/category2/{category1Id}', {
-        params: { path: { category1Id: c1Id.value } },
-      })).data?.data ?? []
+      tableData.value =
+        (
+          await client.GET('/api/v1/product/category2/{category1Id}', {
+            params: { path: { category1Id: c1Id.value } },
+          })
+        ).data?.data ?? []
     } else if (level.value === 3) {
-      tableData.value = (await client.GET('/api/v1/product/category3/{category2Id}', {
-        params: { path: { category2Id: c2Id.value } },
-      })).data?.data ?? []
+      tableData.value =
+        (
+          await client.GET('/api/v1/product/category3/{category2Id}', {
+            params: { path: { category2Id: c2Id.value } },
+          })
+        ).data?.data ?? []
     } else {
       tableData.value = []
     }
