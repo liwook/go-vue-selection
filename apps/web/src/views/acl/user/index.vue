@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
-import { onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { onMounted, ref } from 'vue'
 import { client } from '@/api'
 import type { components } from '@/api/schema'
 import { useCrudTable } from '@/composables/useCrudTable'
 
 type ResponseUser = components['schemas']['types.ResponseUser']
+type Role = components['schemas']['types.Role']
 
 const {
   list,
@@ -67,6 +68,39 @@ async function removeUser(row: ResponseUser) {
     /* 用户取消或接口失败（中间件已提示），流程终止 */
   }
 }
+
+// —— 分配角色 ——
+const assignVisible = ref(false)
+const allRoles = ref<Role[]>([])
+const checkedRoles = ref<string[]>([])
+const currentUserId = ref('')
+
+async function openAssign(row: ResponseUser) {
+  currentUserId.value = row.userId ?? ''
+  try {
+    const { data } = await client.GET('/api/v1/acl/user/{userId}/role', {
+      params: { path: { userId: currentUserId.value } },
+    })
+    allRoles.value = data?.data?.allRolesList ?? []
+    checkedRoles.value = (data?.data?.assignRoles ?? []).map((r) => r.roleId ?? '')
+    assignVisible.value = true
+  } catch {
+    /* 中间件已提示 */
+  }
+}
+
+async function confirmAssign() {
+  try {
+    await client.POST('/api/v1/acl/user/{userId}/role', {
+      params: { path: { userId: currentUserId.value } },
+      body: { userId: currentUserId.value, roleIdList: checkedRoles.value },
+    })
+    ElMessage.success('分配成功')
+    assignVisible.value = false
+  } catch {
+    /* 中间件已提示 */
+  }
+}
 </script>
 
 <template>
@@ -99,6 +133,9 @@ async function removeUser(row: ResponseUser) {
           <template #default="{ row }">
             <el-button size="small" type="warning" @click="openEdit(row)">
               编辑
+            </el-button>
+            <el-button size="small" type="primary" @click="openAssign(row)">
+              分配角色
             </el-button>
             <el-button size="small" type="danger" @click="removeUser(row)">
               删除
@@ -135,6 +172,22 @@ async function removeUser(row: ResponseUser) {
           取消
         </el-button>
         <el-button type="primary" @click="save">
+          确定
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="assignVisible" title="分配角色" width="40%">
+      <el-checkbox-group v-model="checkedRoles">
+        <el-checkbox v-for="r in allRoles" :key="r.roleId" :value="r.roleId">
+          {{ r.roleName }}
+        </el-checkbox>
+      </el-checkbox-group>
+      <template #footer>
+        <el-button @click="assignVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="confirmAssign">
           确定
         </el-button>
       </template>
