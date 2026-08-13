@@ -44,7 +44,8 @@ const {
       })
     }
   },
-  (row) => client.DELETE('/api/v1/acl/user/{userId}', { params: { path: { userId: row.userId ?? '' } } }),
+  (row) =>
+    client.DELETE('/api/v1/acl/user/{userId}', { params: { path: { userId: row.userId ?? '' } } }),
   { key: 'username' },
 )
 
