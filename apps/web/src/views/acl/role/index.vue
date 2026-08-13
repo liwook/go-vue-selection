@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
-import { onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { onMounted, ref } from 'vue'
 import { client } from '@/api'
 import type { components } from '@/api/schema'
 import { useCrudTable } from '@/composables/useCrudTable'
 
 type Role = components['schemas']['types.Role']
+type Menu = components['schemas']['types.Menu']
 
 const {
   list,
@@ -68,6 +69,53 @@ async function removeRole(row: Role) {
     /* 用户取消或接口失败（中间件已提示），流程终止 */
   }
 }
+
+// —— 分配权限（菜单树）——
+const assignVisible = ref(false)
+const menuTree = ref<Menu[]>([])
+const checkedKeys = ref<string[]>([])
+const currentRoleId = ref('')
+const treeRef = ref()
+
+// 递归收集所有 select===true 的 menuId（含父节点，后端去重）
+function collectSelected(nodes: Menu[] | undefined, acc: string[]): string[] {
+  for (const n of nodes ?? []) {
+    if (n.select) acc.push(n.menuId ?? '')
+    collectSelected(n.children, acc)
+  }
+  return acc
+}
+
+async function openAssign(row: Role) {
+  currentRoleId.value = row.roleId ?? ''
+  try {
+    const { data } = await client.GET('/api/v1/acl/permission/role/{roleId}', {
+      params: { path: { roleId: currentRoleId.value } },
+    })
+    const tree = data?.data ?? []
+    menuTree.value = tree
+    checkedKeys.value = collectSelected(tree, [])
+    assignVisible.value = true
+  } catch {
+    /* 中间件已提示 */
+  }
+}
+
+async function confirmAssign() {
+  // 取树中当前勾选（含半选父节点）
+  const half = treeRef.value?.getHalfCheckedKeys?.() ?? []
+  const checked = treeRef.value?.getCheckedKeys?.() ?? []
+  const ids = [...half, ...checked].map(String)
+  try {
+    await client.POST('/api/v1/acl/permission/role/{roleId}', {
+      params: { path: { roleId: currentRoleId.value }, query: { permissionId: ids.join(',') } },
+    })
+    ElMessage.success('分配成功')
+    assignVisible.value = false
+  } catch {
+    /* 中间件已提示 */
+  }
+}
 </script>
 
 <template>
@@ -99,6 +147,9 @@ async function removeRole(row: Role) {
           <template #default="{ row }">
             <el-button size="small" type="warning" @click="openEdit(row)">
               编辑
+            </el-button>
+            <el-button size="small" type="primary" @click="openAssign(row)">
+              分配权限
             </el-button>
             <el-button size="small" type="danger" @click="removeRole(row)">
               删除
@@ -132,6 +183,26 @@ async function removeRole(row: Role) {
           取消
         </el-button>
         <el-button type="primary" @click="save">
+          确定
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="assignVisible" title="分配权限" width="40%">
+      <el-tree
+        ref="treeRef"
+        :data="menuTree"
+        :props="{ label: 'name', children: 'children' }"
+        node-key="menuId"
+        show-checkbox
+        default-expand-all
+        :default-checked-keys="checkedKeys"
+      />
+      <template #footer>
+        <el-button @click="assignVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="confirmAssign">
           确定
         </el-button>
       </template>
