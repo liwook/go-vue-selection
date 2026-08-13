@@ -1,7 +1,9 @@
 <template>
   <div class="trademark">
     <el-card>
-      <el-button type="primary" :icon="Plus" @click="openAdd">新增品牌</el-button>
+      <el-button type="primary" :icon="Plus" @click="openAdd">
+        新增品牌
+      </el-button>
       <el-table v-loading="loading" :data="list" border style="margin-top: 12px">
         <el-table-column type="index" label="序号" width="80" />
         <el-table-column prop="tmName" label="品牌名称" />
@@ -46,22 +48,28 @@
             :on-success="handleLogoSuccess"
             :before-upload="beforeLogoUpload"
           >
-            <el-button type="primary">点击上传</el-button>
+            <el-button type="primary">
+              点击上传
+            </el-button>
           </el-upload>
           <el-image v-if="form.logoUrl" :src="form.logoUrl" style="width: 80px; height: 80px; margin-left: 12px" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">确定</el-button>
+        <el-button @click="dialogVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="save">
+          确定
+        </el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
 import { Delete, Edit, Plus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { client } from '@/api/client'
 import type { components } from '@/api/schema'
 import { useCrudTable } from '@/composables/useCrudTable'
@@ -70,24 +78,37 @@ type Trademark = components['schemas']['types.Trademark']
 
 const token = localStorage.getItem('token') ?? ''
 
-const { list, total, pageNo, pageSize, loading, dialogVisible, title, form, fetchList, openAdd, openEdit, save, remove } =
-  useCrudTable<Trademark>(
-    (page, limit) =>
-      client.GET('/api/v1/product/trademark', { params: { query: { page, limit } } }),
-    (payload) =>
-      payload.tmId
-        ? client.PUT('/api/v1/product/trademark/{trademarkId}', {
-            params: { path: { trademarkId: String(payload.tmId) } },
-            body: { tmId: String(payload.tmId), tmName: payload.tmName!, logoUrl: payload.logoUrl! },
-          })
-        : client.POST('/api/v1/product/trademark', {
-            body: { tmName: payload.tmName!, logoUrl: payload.logoUrl! },
-          }),
-    (row) =>
-      client.DELETE('/api/v1/product/trademark/{trademarkId}', {
-        params: { path: { trademarkId: String(row.tmId) } },
-      }),
-  )
+const {
+  list,
+  total,
+  pageNo,
+  pageSize,
+  loading,
+  dialogVisible,
+  title,
+  form,
+  fetchList,
+  openAdd,
+  openEdit,
+  save,
+  remove,
+} = useCrudTable<Trademark>(
+  (page, limit) => client.GET('/api/v1/product/trademark', { params: { query: { page, limit } } }),
+  (payload) => {
+    const tmName = payload.tmName ?? ''
+    const logoUrl = payload.logoUrl ?? ''
+    return payload.tmId
+      ? client.PUT('/api/v1/product/trademark/{trademarkId}', {
+          params: { path: { trademarkId: String(payload.tmId) } },
+          body: { tmId: String(payload.tmId), tmName, logoUrl },
+        })
+      : client.POST('/api/v1/product/trademark', { body: { tmName, logoUrl } })
+  },
+  (row) =>
+    client.DELETE('/api/v1/product/trademark/{trademarkId}', {
+      params: { path: { trademarkId: String(row.tmId) } },
+    }),
+)
 
 function handleLogoSuccess(res: { data?: string }) {
   if (res.data) form.logoUrl = res.data
