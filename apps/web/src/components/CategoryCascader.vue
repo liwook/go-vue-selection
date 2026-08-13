@@ -52,14 +52,20 @@ async function loadC1() {
   c1List.value = (await client.GET('/api/v1/product/category1')).data?.data ?? []
 }
 async function loadC2(category1Id: string) {
-  c2List.value = (await client.GET('/api/v1/product/category2/{category1Id}', {
-    params: { path: { category1Id } },
-  })).data?.data ?? []
+  c2List.value =
+    (
+      await client.GET('/api/v1/product/category2/{category1Id}', {
+        params: { path: { category1Id } },
+      })
+    ).data?.data ?? []
 }
 async function loadC3(category2Id: string) {
-  c3List.value = (await client.GET('/api/v1/product/category3/{category2Id}', {
-    params: { path: { category2Id } },
-  })).data?.data ?? []
+  c3List.value =
+    (
+      await client.GET('/api/v1/product/category3/{category2Id}', {
+        params: { path: { category2Id } },
+      })
+    ).data?.data ?? []
 }
 
 function onC1Change(val?: string) {
@@ -89,7 +95,15 @@ watch(c2, async (val) => {
 })
 
 // 暴露给父组件在新增完成后重置
-defineExpose({ reset: () => { c1.value = ''; c2.value = ''; c3.value = ''; c2List.value = []; c3List.value = [] } })
+defineExpose({
+  reset: () => {
+    c1.value = ''
+    c2.value = ''
+    c3.value = ''
+    c2List.value = []
+    c3List.value = []
+  },
+})
 void props
 </script>
 
