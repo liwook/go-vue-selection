@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElMessageBox } from 'element-plus'
 import { onMounted } from 'vue'
 import { client } from '@/api'
 import type { components } from '@/api/schema'
@@ -22,6 +23,7 @@ const {
   openAdd,
   openEdit,
   save,
+  remove,
 } = useCrudTable<ResponseUser>(
   (page, limit, username) =>
     client.GET('/api/v1/acl/user', {
@@ -53,6 +55,17 @@ onMounted(fetchList)
 
 function addUser() {
   openAdd({ name: '', username: '', password: '' } as Partial<ResponseUser>)
+}
+
+async function removeUser(row: ResponseUser) {
+  try {
+    await ElMessageBox.confirm(`确定删除用户「${row.username ?? ''}」吗？`, '提示', {
+      type: 'warning',
+    })
+    await remove(row)
+  } catch {
+    /* 用户取消或接口失败（中间件已提示），流程终止 */
+  }
 }
 </script>
 
@@ -86,6 +99,9 @@ function addUser() {
           <template #default="{ row }">
             <el-button size="small" type="warning" @click="openEdit(row)">
               编辑
+            </el-button>
+            <el-button size="small" type="danger" @click="removeUser(row)">
+              删除
             </el-button>
           </template>
         </el-table-column>
