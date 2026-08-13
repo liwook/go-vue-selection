@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/src/api/schema.d.ts"]
+    "includes": [
+      "**",
+      "!**/src/api/schema.d.ts",
+      "!**/auto-imports.d.ts",
+      "!**/components.d.ts",
+      "!**/svg-component.d.ts",
+      "!**/svg-component-global.d.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -35,7 +42,8 @@
       "linter": {
         "rules": {
           "style": {
-            "useImportType": "off"
+            "useImportType": "off",
+            "useVueMultiWordComponentNames": "off"
           },
           "correctness": {
             "noUnusedImports": "off",
