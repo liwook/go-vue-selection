@@ -1,9 +1,9 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import auth from '@/directives/auth'
 import SvgIcon from '~virtual/svg-component'
 import App from './App.vue'
 import router from './router'
-import auth from '@/directives/auth'
 
 // 样式：全局重置
 import './style.css'
