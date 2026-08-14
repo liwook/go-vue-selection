@@ -1,7 +1,7 @@
 <template>
   <div class="trademark">
     <el-card>
-      <el-button type="primary" :icon="Plus" @click="openAdd">
+      <el-button type="primary" :icon="Plus" v-auth="'btn.Trademark.add'" @click="openAdd">
         新增品牌
       </el-button>
       <el-table v-loading="loading" :data="list" border style="margin-top: 12px">
@@ -15,8 +15,8 @@
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column label="操作" width="160">
           <template #default="{ row }">
-            <el-button size="small" :icon="Edit" @click="openEdit(row)" />
-            <el-popconfirm title="确认删除?" @confirm="remove(row)">
+            <el-button size="small" :icon="Edit" v-auth="'btn.Trademark.update'" @click="openEdit(row)" />
+            <el-popconfirm v-auth="'btn.Trademark.remove'" title="确认删除?" @confirm="remove(row)">
               <template #reference>
                 <el-button size="small" type="danger" :icon="Delete" />
               </template>
