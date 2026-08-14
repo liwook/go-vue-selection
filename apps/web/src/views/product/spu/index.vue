@@ -4,6 +4,7 @@
     <el-card v-if="scene === 0">
       <CategoryCascader v-model:c1="c1Id" v-model:c2="c2Id" v-model:c3="c3Id" />
       <el-button
+        v-auth="'btn.Spu.add'"
         type="primary"
         :icon="Plus"
         style="margin-top: 12px"
@@ -21,7 +22,7 @@
             <el-button size="small" type="primary" @click="openAddSku(row)">
               添加 SKU
             </el-button>
-            <el-button size="small" :icon="Edit" @click="openSpuEdit(row)" />
+            <el-button v-auth="'btn.Spu.update'" size="small" :icon="Edit" @click="openSpuEdit(row)" />
           </template>
         </el-table-column>
       </el-table>
