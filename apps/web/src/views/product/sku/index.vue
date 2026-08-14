@@ -32,11 +32,11 @@
             >
               上架
             </el-button>
-            <el-button v-else size="small" v-auth="'btn.Sku.down'" type="warning" @click="cancelSale(row)">
+            <el-button v-else v-auth="'btn.Sku.down'" size="small" type="warning" @click="cancelSale(row)">
               下架
             </el-button>
-            <el-button size="small" :icon="View" v-auth="'btn.Sku.detail'" @click="openDetail(row)" />
-            <el-button size="small" type="danger" :icon="Delete" v-auth="'btn.Sku.remove'" @click="remove(row)" />
+            <el-button v-auth="'btn.Sku.detail'" size="small" :icon="View" @click="openDetail(row)" />
+            <el-button v-auth="'btn.Sku.remove'" size="small" type="danger" :icon="Delete" @click="remove(row)" />
           </template>
         </el-table-column>
       </el-table>
