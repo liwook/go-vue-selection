@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column label="操作" width="160">
           <template #default="{ row }">
-            <el-button size="small" :icon="Edit" v-auth="'btn.Attr.update'" @click="openEdit(row)" />
+            <el-button v-auth="'btn.Attr.update'" size="small" :icon="Edit" @click="openEdit(row)" />
             <el-popconfirm v-auth="'btn.Attr.remove'" title="确认删除?" @confirm="remove(row)">
               <template #reference>
                 <el-button size="small" type="danger" :icon="Delete" />
