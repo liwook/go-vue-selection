@@ -93,7 +93,7 @@ async function removeMenu(row: Menu) {
 <template>
   <div class="acl-permission">
     <el-card>
-      <el-button type="primary" @click="openAdd()">
+      <el-button type="primary" v-auth="'btn.Permission.add'" @click="openAdd()">
         添加菜单
       </el-button>
 
@@ -103,13 +103,13 @@ async function removeMenu(row: Menu) {
         <el-table-column prop="level" label="层级" width="100" />
         <el-table-column label="操作" width="320">
           <template #default="{ row }">
-            <el-button size="small" type="warning" @click="openEdit(row)">
+            <el-button size="small" type="warning" v-auth="'btn.Permission.update'" @click="openEdit(row)">
               修改
             </el-button>
-            <el-button size="small" type="primary" @click="openAdd(row)">
+            <el-button size="small" type="primary" v-auth="'btn.Permission.add'" @click="openAdd(row)">
               添加子菜单
             </el-button>
-            <el-button size="small" type="danger" @click="removeMenu(row)">
+            <el-button size="small" type="danger" v-auth="'btn.Permission.remove'" @click="removeMenu(row)">
               删除
             </el-button>
           </template>

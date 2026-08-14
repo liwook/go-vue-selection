@@ -117,7 +117,7 @@ async function confirmAssign() {
           <el-button @click="reset">
             重置
           </el-button>
-          <el-button type="primary" @click="addUser">
+          <el-button type="primary" v-auth="'btn.User.add'" @click="addUser">
             新增用户
           </el-button>
         </el-form-item>
@@ -131,13 +131,13 @@ async function confirmAssign() {
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column label="操作" width="220">
           <template #default="{ row }">
-            <el-button size="small" type="warning" @click="openEdit(row)">
+            <el-button size="small" type="warning" v-auth="'btn.User.update'" @click="openEdit(row)">
               编辑
             </el-button>
-            <el-button size="small" type="primary" @click="openAssign(row)">
+            <el-button size="small" type="primary" v-auth="'btn.User.update'" @click="openAssign(row)">
               分配角色
             </el-button>
-            <el-button size="small" type="danger" @click="removeUser(row)">
+            <el-button size="small" type="danger" v-auth="'btn.User.remove'" @click="removeUser(row)">
               删除
             </el-button>
           </template>
