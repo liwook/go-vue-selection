@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import SvgIcon from '~virtual/svg-component'
 import App from './App.vue'
 import router from './router'
+import auth from '@/directives/auth'
 
 // 样式：全局重置
 import './style.css'
@@ -21,6 +22,9 @@ app.component('SvgIcon', SvgIcon)
 
 // 注册 pinia（必须在 router 之前，守卫里 useUserStore() 才能拿到激活的实例）
 app.use(createPinia())
+
+// 全局注册按钮级权限指令 v-auth（指令内部在 mounted 时 useUserStore()，pinia 已就绪）
+app.directive('auth', auth)
 
 // 注册路由
 app.use(router)
