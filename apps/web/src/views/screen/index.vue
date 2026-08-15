@@ -12,29 +12,50 @@
       <section class="col col-left">
         <div class="chart-card">
           <div class="big-number">
-            <div class="big-number__title">实时游客总数</div>
-            <div class="big-number__value">{{ data.realTimeStats.total.toLocaleString() }}</div>
-            <div class="big-number__unit">人</div>
+            <div class="big-number__title">
+              实时游客总数
+            </div>
+            <div class="big-number__value">
+              {{ data.realTimeStats.total.toLocaleString() }}
+            </div>
+            <div class="big-number__unit">
+              人
+            </div>
           </div>
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">实时游客占比</div>
+          <div class="chart-card__title">
+            实时游客占比
+          </div>
           <EChart :option="liquidOption" />
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">男女比例</div>
+          <div class="chart-card__title">
+            男女比例
+          </div>
           <EChart :option="genderOption" />
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">年龄分布</div>
+          <div class="chart-card__title">
+            年龄分布
+          </div>
           <EChart :option="ageOption" />
         </div>
       </section>
       <section class="col col-center">
-        <div class="chart-card">占位：中列图表</div>
+        <div class="chart-card map-card">
+          <div class="chart-card__title">平台高峰预警信息</div>
+          <EChart :option="mapOption" />
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__title">未来 30 天游客量趋势</div>
+          <EChart :option="trendOption" />
+        </div>
       </section>
       <section class="col col-right">
-        <div class="chart-card">占位：右列图表</div>
+        <div class="chart-card">
+          占位：右列图表
+        </div>
       </section>
     </main>
   </div>
@@ -57,23 +78,26 @@ onMounted(() => {
 })
 
 // 左列：水球图（实时游客占比）
-const liquidOption = computed(() => ({
-  series: [
-    {
-      type: 'liquidFill',
-      radius: '70%',
-      data: [data.value.realTimeStats.trend],
-      color: ['#4fc3f7'],
-      backgroundStyle: { color: 'transparent', borderColor: 'transparent' },
-      outline: { show: false },
-      label: {
-        formatter: () => `${Math.round(data.value.realTimeStats.trend * 100)}%`,
-        fontSize: 28,
-        color: '#ffffff',
-      },
-    },
-  ],
-}) as EChartsOption)
+const liquidOption = computed(
+  () =>
+    ({
+      series: [
+        {
+          type: 'liquidFill',
+          radius: '70%',
+          data: [data.value.realTimeStats.trend],
+          color: ['#4fc3f7'],
+          backgroundStyle: { color: 'transparent', borderColor: 'transparent' },
+          outline: { show: false },
+          label: {
+            formatter: () => `${Math.round(data.value.realTimeStats.trend * 100)}%`,
+            fontSize: 28,
+            color: '#ffffff',
+          },
+        },
+      ],
+    }) as EChartsOption,
+)
 
 // 左列：男女比例
 const genderOption = computed<EChartsOption>(() => ({
@@ -111,6 +135,81 @@ const ageOption = computed<EChartsOption>(() => ({
       center: ['50%', '45%'],
       label: { color: '#cfe4ff' },
       data: data.value.ageRatio,
+    },
+  ],
+}))
+
+// 中列：中国地图（平台高峰预警）
+const mapOption = computed<EChartsOption>(() => ({
+  tooltip: {
+    trigger: 'item',
+    formatter: '{b}<br/>预警值：{c}',
+  },
+  visualMap: {
+    min: 0,
+    max: 100,
+    left: 16,
+    bottom: 16,
+    text: ['高', '低'],
+    textStyle: { color: '#cfe4ff' },
+    calculable: true,
+    inRange: { color: ['#0a2a5e', '#4fc3f7', '#ff8a65'] },
+  },
+  series: [
+    {
+      type: 'map',
+      map: 'china',
+      roam: false,
+      label: { show: false },
+      itemStyle: {
+        areaColor: '#0a1a3a',
+        borderColor: 'rgba(79, 195, 247, 0.4)',
+      },
+      emphasis: {
+        label: { color: '#fff' },
+        itemStyle: { areaColor: '#4fc3f7' },
+      },
+      data: data.value.peakWarning,
+    },
+  ],
+}))
+
+// 中列：未来 30 天游客量趋势（渐变面积图）
+const trendOption = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'axis' },
+  grid: { left: 40, right: 20, top: 20, bottom: 30 },
+  xAxis: {
+    type: 'category',
+    data: data.value.monthlyTrend.dates,
+    axisLine: { lineStyle: { color: 'rgba(207,228,255,0.4)' } },
+    axisLabel: { color: '#cfe4ff', interval: 4 },
+  },
+  yAxis: {
+    type: 'value',
+    axisLine: { lineStyle: { color: 'rgba(207,228,255,0.4)' } },
+    axisLabel: { color: '#cfe4ff' },
+    splitLine: { lineStyle: { color: 'rgba(79,195,247,0.1)' } },
+  },
+  series: [
+    {
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      data: data.value.monthlyTrend.values,
+      lineStyle: { color: '#4fc3f7', width: 2 },
+      areaStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(79,195,247,0.5)' },
+            { offset: 1, color: 'rgba(79,195,247,0.02)' },
+          ],
+        },
+      },
     },
   ],
 }))
@@ -186,6 +285,10 @@ const ageOption = computed<EChartsOption>(() => ({
   color: #9fd3ff;
   margin-bottom: 8px;
   align-self: flex-start;
+}
+
+.map-card {
+  flex: 1.4;
 }
 
 .chart-card :deep(.e-chart) {
