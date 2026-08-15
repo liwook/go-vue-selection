@@ -6,7 +6,7 @@
 # ---- 构建参数（构建时可在外部覆盖版本）----
 # 版本对照：根 package.json 的 packageManager=pnpm@11.20.0、engines.node>=20
 # node 用 24（LTS，满足 >=20）；nginx 用 1.30.4 稳定线
-ARG NODE_VERSION=24
+ARG NODE_VERSION=24.18.0
 ARG NGINX_VERSION=1.30.4
 
 # ---- 阶段 1：构建 ----

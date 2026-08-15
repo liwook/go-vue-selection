@@ -1,4 +1,5 @@
-FROM golang:1.26-alpine AS builder
+ARG GO_VERSION=1.26.6
+FROM golang:${GO_VERSION}-alpine AS builder
 LABEL authors="li"
 
 # 为我们的镜像设置必要的环境变量
