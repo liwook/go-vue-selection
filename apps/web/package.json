@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vue-tsc -b && vite build",
+    "build:prod": "vue-tsc -b && vite build --mode production",
     "build:test": "vue-tsc -b && vite build --mode test",
     "preview": "vite preview",
     "api:gen": "swagger2openapi ../server/api/swagger.json -o src/api/openapi.json && openapi-typescript src/api/openapi.json -o src/api/schema.d.ts",
