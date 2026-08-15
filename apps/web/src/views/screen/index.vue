@@ -44,17 +44,30 @@
       </section>
       <section class="col col-center">
         <div class="chart-card map-card">
-          <div class="chart-card__title">平台高峰预警信息</div>
+          <div class="chart-card__title">
+            平台高峰预警信息
+          </div>
           <EChart :option="mapOption" />
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">未来 30 天游客量趋势</div>
+          <div class="chart-card__title">
+            未来 30 天游客量趋势
+          </div>
           <EChart :option="trendOption" />
         </div>
       </section>
       <section class="col col-right">
         <div class="chart-card">
-          占位：右列图表
+          <div class="chart-card__title">热门景区游客量 TOP5</div>
+          <EChart :option="spotOption" />
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__title">年度游客量对比</div>
+          <EChart :option="yearOption" />
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__title">预约渠道分布</div>
+          <EChart :option="channelOption" />
         </div>
       </section>
     </main>
@@ -210,6 +223,93 @@ const trendOption = computed<EChartsOption>(() => ({
           ],
         },
       },
+    },
+  ],
+}))
+
+// 右列：热门景区游客量 TOP5（横向柱状）
+const spotOption = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  grid: { left: 80, right: 30, top: 20, bottom: 20 },
+  xAxis: {
+    type: 'value',
+    axisLabel: { color: '#cfe4ff' },
+    splitLine: { lineStyle: { color: 'rgba(79,195,247,0.1)' } },
+  },
+  yAxis: {
+    type: 'category',
+    data: data.value.hotScenicSpots.map((i) => i.name).reverse(),
+    axisLine: { lineStyle: { color: 'rgba(207,228,255,0.4)' } },
+    axisLabel: { color: '#cfe4ff' },
+  },
+  series: [
+    {
+      type: 'bar',
+      data: data.value.hotScenicSpots.map((i) => i.value).reverse(),
+      barWidth: '55%',
+      itemStyle: {
+        borderRadius: [0, 4, 4, 0],
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 1,
+          y2: 0,
+          colorStops: [
+            { offset: 0, color: '#1e88e5' },
+            { offset: 1, color: '#4fc3f7' },
+          ],
+        },
+      },
+      label: { show: true, position: 'right', color: '#cfe4ff' },
+    },
+  ],
+}))
+
+// 右列：年度游客量对比（多系列折线）
+const yearOption = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'axis' },
+  legend: {
+    data: data.value.yearlyComparison.years,
+    textStyle: { color: '#cfe4ff' },
+    top: 0,
+  },
+  grid: { left: 40, right: 20, top: 30, bottom: 25 },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: data.value.yearlyComparison.months,
+    axisLine: { lineStyle: { color: 'rgba(207,228,255,0.4)' } },
+    axisLabel: { color: '#cfe4ff', interval: 1 },
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: { color: '#cfe4ff' },
+    splitLine: { lineStyle: { color: 'rgba(79,195,247,0.1)' } },
+  },
+  series: data.value.yearlyComparison.years.map((name, idx) => ({
+    name,
+    type: 'line',
+    smooth: true,
+    data: data.value.yearlyComparison.data[idx],
+    lineStyle: { width: 2 },
+  })),
+}))
+
+// 右列：预约渠道分布（环形饼图）
+const channelOption = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'item' },
+  legend: {
+    bottom: 0,
+    textStyle: { color: '#cfe4ff' },
+  },
+  series: [
+    {
+      type: 'pie',
+      radius: ['40%', '65%'],
+      center: ['50%', '45%'],
+      label: { color: '#cfe4ff' },
+      data: data.value.channelStats,
     },
   ],
 }))
