@@ -1,15 +1,23 @@
-# newproject
+# go-vue-selection
 
-前后端同仓（monorepo）练习项目。
+前后端同仓（monorepo）的**中后台脚手架**，内置 Vue3 管理后台与数据大屏（`/screen`）。
 
 - 前端：`apps/web`（Vue3 + Vite + TypeScript，工程名 `vue_admin`）
 - 后端：`apps/server`（Go + Gin）
 
+## 文档索引
+
+- **工程化**：[`工程化配置指南.md`](./工程化配置指南.md)——pnpm workspace / Biome / lefthook / commitlint 配置详解
+- **前端**：
+  - [阶段02·前端工程搭建与选型总结](./apps/web/docs/02.前端工程搭建与选型总结.md)——脚手架、Element Plus、openapi-fetch 请求封装
+  - [阶段15·数据大屏实现指南](./apps/web/docs/12.阶段15·数据大屏实现指南.md)——ECharts + 中国地图
+  - [阶段16·打包与上线部署](./apps/web/docs/13.阶段16·打包与上线部署.md)——Vite 构建与 Nginx / Docker 部署
+- **后端**：[`apps/server/docs/`](./apps/server/docs/)——后端设计、测试规范（含集成测试 `-race` 说明）
+
 ## 仓库布局
 
 ```text
-newproject/
-├── .gitignore
+go-vue-selection/
 ├── .npmrc                # 强制 pnpm（engine-strict=true）
 ├── .gitattributes        # 统一换行符为 LF（配合 Biome lineEnding: lf）
 ├── package.json          # 根编排：pnpm workspace + 跨端脚本（prepare / dev / build / lint 转发到 apps/web）
@@ -26,76 +34,59 @@ newproject/
 | 层 | 工具 |
 | --- | --- |
 | 前端框架 | Vue3 + Vite + TypeScript |
-| 前端 lint + 格式化 | Biome（`.js/.ts/.vue(<script>)`，主力） |
+| 前端 lint + 格式化 | Biome（`.js/.ts/.vue<script>`，主力，不使用 Prettier） |
 | 前端模板检查 | ESLint（仅 `.vue` 的 `<template>`） |
-| 样式检查 | 暂未启用（Stylelint 待 CSS 规范需求时接入） |
-| 类型检查 | vue-tsc（**提交前拦截**：pre-commit 钩子执行 `vue-tsc -b`；也纳入 `build`） |
-| 提交信息规范 | commitlint（Conventional Commits） |
-| 后端代码检查 | golangci-lint（`.golangci.yml`）+ `gofmt` + `go vet ./...` |
-| 统一 Git 钩子 | lefthook（Go 实现，前后端一起管） |
+| 类型检查 | vue-tsc（提交前 `pre-commit` 拦截 + 纳入 `build`） |
+| 提交规范 | commitlint（Conventional Commits） |
+| 后端检查 | golangci-lint + `gofmt` + `go vet ./...` |
+| 统一钩子 | lefthook（前后端一起管） |
 | 包管理 | 强制 pnpm（禁止 npm） |
 
-> 说明：前端格式化与 lint 由 **Biome** 统一承担，**不使用 Prettier**；ESLint 仅补 `.vue` 模板规则，不引入 `typescript-eslint` 解析器（避免与 Biome 在 `.ts` 规则上重叠）。详见 `工程化配置指南.md`。
+> 后端接口经 Swagger 生成 OpenAPI schema，前端用 `openapi-fetch` 生成类型安全的 `src/api/schema.d.ts`（已提交，clone 即跑）。详见 `工程化配置指南.md`。
 
 ## 环境要求
 
-- Node.js（建议 LTS）
-- [pnpm](https://pnpm.io/)（`npm i -g pnpm` 或 `corepack enable`）
-- Go 1.26.3+（`apps/server/go.mod` 限定）
+- Node.js ≥ 20（建议 LTS）
+- [pnpm](https://pnpm.io/)（`corepack enable` 或 `npm i -g pnpm`；仓库锁定 `pnpm@11.20.0`）
+- Go 1.26+
 - Docker + Docker Compose（仅容器化启动后端时需要；自带 PostgreSQL 18.3）
 
 ## 快速开始
 
 ```bash
-# 1. 安装前端依赖（根目录）
+# 1. 安装依赖（根目录）
 pnpm install
 
 # 2. 启动前端开发服务器（5173）
 pnpm dev
 
-# 前端已提交由后端 swagger.json 生成的类型文件 src/api/schema.d.ts，
-# 因此 clone 后无需额外步骤即可 pnpm dev 运行。
-# 仅当后端接口变动、重新 make swagger 后，才需在前端重跑以同步类型：
-cd apps/web && pnpm api:gen   # Swagger 2.0 → OpenAPI 3.0 → schema.d.ts
-
-# 3. 后端启动方式（二选一）
-
+# 3. 后端启动（二选一）
 # 方式 A：本地直接运行（需已装 Go，且存在 apps/server/etc/config.yaml）
-#   - 配置中 postgres.host 默认指向 106.12.122.101，请改成你本地/可达的 PG 地址
-#   - 启动后监听 :9000，配置加载支持 -f 指定配置文件路径
+#   - config.yaml 中 postgres.host 默认指向远端，请改成你本地/可达的 PG 地址
+#   - 启动后监听 :9000，支持 -f 指定配置文件路径
 cd apps/server && go run .
 
-# 方式 B：容器化启动（PostgreSQL 18.3 + 后端，自动建表 + 灌初始数据）
+# 方式 B：容器化（PostgreSQL 18.3 + 后端，自动建表 + 灌初始数据）
 cd apps/server && cp .env.example .env   # 先填 POSTGRES_PASSWORD
 docker compose up -d
 ```
 
-前端开发服务器：[http://localhost:5173](http://localhost:5173)
-后端接口示例：[http://localhost:9000/health](http://localhost:9000/health)
+- 前端开发服务器：<http://localhost:5173>
+- 后端健康检查：<http://localhost:9000/health>
+- 后端 Swagger：执行 `cd apps/server && make swagger` 生成到 `api/`，访问 <http://localhost:9000/swagger/index.html>
 
-> 说明：根目录的 `pnpm dev` 仅启动前端；后端需单独运行。
-> 后端默认通过 `apps/server/etc/config.yaml` 读取配置，监听 `:9000`，启动时自动灌入幂等种子数据。
-> 容器化部署时由 `docker-compose.yaml` 中的环境变量（前缀 `VUE_ADMIN_`，如 `VUE_ADMIN_POSTGRES_HOST=pg`、`VUE_ADMIN_LOG_OUTPUT=stdout`）覆盖数据库与日志输出，日志统一输出到 stdout，`pg` 容器首次启动会自动执行 `apps/server/init-sql/` 下的建表脚本。
+> 根目录 `pnpm dev` 仅启动前端；后端需单独运行。容器化部署时由 `docker-compose.yaml` 的环境变量（前缀 `VUE_ADMIN_`，如 `VUE_ADMIN_POSTGRES_HOST=pg`）覆盖数据库与日志，日志统一输出 stdout，首次启动自动执行 `apps/server/init-sql/` 下建表脚本。
 
-### 验证后端启动成功
-
-```bash
-curl http://127.0.0.1:9000/health   # 返回 OK / 200 即正常
-```
-
-接口文档（Swagger）：执行 `cd apps/server && make swagger` 生成到 `api/`，访问 [http://localhost:9000/swagger/index.html](http://localhost:9000/swagger/index.html)
-
-### 后端配置速览（`apps/server/etc/config.yaml`）
+## 后端配置速览（`apps/server/etc/config.yaml`）
 
 | 段 | 关键字段 | 说明 |
 | --- | --- | --- |
 | 顶层 | `port` | HTTP 监听端口，默认 `9000` |
-| `postgres` | `host` / `port` / `user` / `password` / `dbname` | PostgreSQL 连接；可用 `VUE_ADMIN_POSTGRES_*` 环境变量覆盖 |
-| `log` | `output`（`file`/`stdout`/`both`） | Docker 下建议 `stdout`；本地默认写 `app.log` |
-| `auth` | `jwt_secret` / `jwt_expire` | JWT 密钥与过期时长（小时） |
-| `pprof` | `enabled` / `port` | 调试端口，默认关闭，仅绑定 127.0.0.1 |
+| `postgres` | `host`/`port`/`user`/`password`/`dbname` | PostgreSQL 连接，可用 `VUE_ADMIN_POSTGRES_*` 覆盖 |
+| `log` | `output`（`file`/`stdout`/`both`） | Docker 下建议 `stdout` |
+| `auth` | `jwt_secret`/`jwt_expire` | JWT 密钥与过期时长（小时） |
 
-> 常用后端命令（在 `apps/server` 下）：`make build` 编译、`make vet` 静态检查、`make test-unit` 单元测试、`make test-it` 集成测试、`make swagger` 生成文档。更完整的后端设计/测试规范见 `apps/server/docs/`。
+常用后端命令（在 `apps/server` 下）：`make build` / `make vet` / `make test-unit` / `make test-it` / `make swagger`。更完整的后端设计与测试（含集成测试 `-race` 竞态检测）见 `apps/server/docs/`。
 
 ## 常用脚本
 
@@ -104,47 +95,16 @@ curl http://127.0.0.1:9000/health   # 返回 OK / 200 即正常
 | `pnpm dev` | 启动前端开发服务器（仅前端） |
 | `pnpm --filter web lint` | 前端 Biome 检查（lint + 格式化） |
 | `pnpm --filter web lint:vue` | 前端 ESLint 仅查 `.vue` 模板 |
-| `pnpm --filter web format` | 前端 Biome 格式化（`biome check --write`） |
+| `pnpm --filter web format` | 前端 Biome 格式化 |
 | `pnpm --filter web build` | 前端类型检查（vue-tsc）+ 构建 |
+| `pnpm --filter web build:prod` | 生产模式构建（同 build，显式 `production`） |
 | `cd apps/server && golangci-lint run ./...` | 后端聚合 lint |
 | `cd apps/server && go vet ./...` | 后端静态检查 |
-| `cd apps/server && go test -tags=integration ./tests/...` | 后端集成测试（需连 `vue_admin_test` 库） |
-| `cd apps/server && go test -tags=integration -race ./tests/...` | 集成测试 + 竞态检测（CI 定时/发布前跑，见下） |
 
-### 测试与竞态检测（`-race`）
+## 提交规范
 
-集成测试通过进程内 `httptest.Server` 串行发起 HTTP 请求，用例之间无并发、包级 `apiClient` 在 `TestMain` 初始化后只读，因此**日常本地回归不必带 `-race`**：
+提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/)，由 `lefthook` 的 `commit-msg` 钩子经 `commitlint` 校验；`pre-commit` 并行执行前端 Biome + ESLint(`.vue`) + `vue-tsc -b` 类型检查 + 后端 `gofmt` + `go vet`。详见 `工程化配置指南.md`。
 
-```bash
-cd apps/server && go test -tags=integration ./tests/...
-```
+## 生产部署
 
-`-race` 的价值在于"体检"被测的服务器代码（handler / middleware / 全局组件）在并发请求下是否隐藏数据竞争，建议放到 CI 定时任务或发布前检查中跑一遍（成本仅慢几倍）：
-
-```bash
-cd apps/server && go test -tags=integration -race ./tests/...
-```
-
-前提：必须在 `apps/server` 目录下，且能连上 `vue_admin_test` 库、存在 `./etc/config.yaml`（由 `TestMain` 加载）。若后续编写并发/压测类用例（用了 `t.Parallel()` 或多个 goroutine 复用 `apiClient`），则必须默认带 `-race`。
-
-## Git 提交规范
-
-提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/)，
-由 `lefthook` 的 `commit-msg` 钩子通过 `commitlint` 校验。
-
-示例：
-
-```text
-feat: 新增用户登录接口
-chore: 初始化前端工程
-fix: 修复 CORS 跨域问题
-```
-
-`pre-commit` 钩子会自动并行执行：前端 Biome 检查 + ESLint（仅 `.vue` 模板）+ **`vue-tsc -b` 类型检查（前端 `.ts/.vue` 改动时拦截，类型不过不能提交）** + 后端 `gofmt` 格式化 + `go vet ./...`（golangci-lint 不在钩子里跑，需手动在 `apps/server` 执行）。
-
-> 说明：类型检查仅匹配 `apps/web/**/*.{ts,vue}`，纯后端/文档提交时自动跳过、零等待；`vue-tsc -b` 带增量缓存，首次稍慢、后续 2~10 秒。
-
-## 分工说明
-
-- **配置 / 工程化**：本仓库的脚手架与各 lint / 格式化 / 钩子配置文件。
-- **业务代码**：Go 路由、中间件、CORS，以及 Vue 组件、页面逻辑、axios 调用等由使用者自行实现。
+前端纯静态产物，打包与 Nginx / Docker 部署见 [`apps/web/docs/13.阶段16·打包与上线部署.md`](./apps/web/docs/13.阶段16·打包与上线部署.md)。
