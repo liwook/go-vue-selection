@@ -46,6 +46,24 @@ go-vue-selection/
 
 ## 快速开始
 
+### 方式一：容器化一键全栈（推荐，一条命令同时启动前端 + 后端 + 数据库）
+
+在**仓库根目录**执行：
+
+```bash
+# 1. 准备环境变量（填入 POSTGRES_PASSWORD 与 AUTH_JWT_SECRET）
+cp apps/server/.env.example apps/server/.env
+
+# 2. 一条命令拉起 PostgreSQL + 后端(Go) + 前端(Nginx)
+docker compose up -d --build
+```
+
+- 访问站点：<http://localhost>
+- 对外仅暴露 80（前端 Nginx），`/api` 由 Nginx 反代到后端 `server:9000`，数据库端口不对外暴露
+- 容器内使用 `etc/config.yaml.example` 作默认配置，postgres 连接 / 日志输出 / jwt_secret 等由 `.env` 注入，**无需本地私有 `config.yaml`**
+
+### 方式二：本地开发（前后端分离，热更新）
+
 ```bash
 # 1. 安装依赖（根目录）
 pnpm install
@@ -53,15 +71,10 @@ pnpm install
 # 2. 启动前端开发服务器（5173）
 pnpm dev
 
-# 3. 后端启动（二选一）
-# 方式 A：本地直接运行（需已装 Go，且存在 apps/server/etc/config.yaml）
+# 3. 后端本地运行（需已装 Go，且存在 apps/server/etc/config.yaml）
 #   - config.yaml 中 postgres.host 默认指向远端，请改成你本地/可达的 PG 地址
 #   - 启动后监听 :9000，支持 -f 指定配置文件路径
 cd apps/server && go run .
-
-# 方式 B：容器化（PostgreSQL 18.3 + 后端，自动建表 + 灌初始数据）
-cd apps/server && cp .env.example .env   # 先填 POSTGRES_PASSWORD
-docker compose up -d
 ```
 
 - 前端开发服务器：<http://localhost:5173>
