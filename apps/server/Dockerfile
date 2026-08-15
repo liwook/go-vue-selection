@@ -27,9 +27,10 @@ COPY . .
 #   内部包内，无需 --parseDependency（解析第三方依赖会大幅拖慢，且产物一致）
 # 先基于 go.mod 锁定的版本预编译 swag 二进制，并复用 go build cache，
 # 二次构建秒级命中缓存；取代原先 `go run` 每次现拉源码编译的慢路径（约 60s+）
+# 注意：module-aware 模式下 go build 不支持 path@version 语法，版本由 go.mod 决定
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    go build -o /usr/local/bin/swag github.com/swaggo/swag/cmd/swag@v1.16.4
+    go build -o /usr/local/bin/swag github.com/swaggo/swag/cmd/swag
 RUN --mount=type=cache,target=/go/pkg/mod \
     swag init -g main.go -o api --parseInternal
 
