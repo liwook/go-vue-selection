@@ -182,9 +182,11 @@ const mapOption = computed<EChartsOption>(() => ({
   visualMap: {
     min: 0,
     max: 100,
-    right: 16,
+    left: 16,
     bottom: 16,
-    orient: 'horizontal',
+    orient: 'vertical',
+    itemWidth: 12,
+    itemHeight: 120,
     text: ['高', '低'],
     textStyle: { color: '#cfe4ff' },
     calculable: true,
@@ -195,9 +197,11 @@ const mapOption = computed<EChartsOption>(() => ({
       type: 'map',
       map: 'china',
       roam: false,
-      // 放大并居中显示，避免地图区域显小
-      layoutCenter: ['50%', '50%'],
-      layoutSize: '120%',
+      // 居中放大：layoutSize 以较短边为基准，aspectScale 调整地图长宽比，
+      // 使地图既能放大展示又不会溢出容器被裁
+      layoutCenter: ['50%', '52%'],
+      layoutSize: '98%',
+      aspectScale: 0.95,
       label: { show: false },
       itemStyle: {
         areaColor: '#0a1a3a',
