@@ -1,16 +1,18 @@
 <template>
-  <el-card class="home-card" shadow="hover">
-    <div class="greeting">
-      <el-avatar :size="96" :src="avatarUrl" />
-      <div class="text">
-        <h2>{{ greeting }}，{{ userStore.name || '游客' }}</h2>
-        <p>欢迎使用选课管理系统</p>
+  <div class="home-wrapper">
+    <el-card class="home-card" shadow="hover">
+      <div class="greeting">
+        <el-avatar :size="96" :src="avatarUrl" />
+        <div class="text">
+          <h2>{{ greeting }}，{{ userStore.name || '游客' }}</h2>
+          <p>欢迎使用选课管理系统</p>
+        </div>
       </div>
-    </div>
-  </el-card>
-  <el-card class="welcome-card" shadow="hover" :body-style="{ padding: '0' }">
-    <SvgIcon name="welcome" class="welcome-illustration" />
-  </el-card>
+    </el-card>
+    <el-card class="welcome-card" shadow="hover" :body-style="{ padding: '0' }">
+      <SvgIcon name="welcome" class="welcome-illustration" />
+    </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
