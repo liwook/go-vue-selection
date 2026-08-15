@@ -1,0 +1,26 @@
+# 前端镜像构建上下文（仓库根）排除项
+# 目标：仅保留前端构建所需文件，避免把后端代码 / 依赖 / 大目录拷进 builder
+
+# 后端（前端构建不需要 Go 代码）
+apps/server/
+
+# Node 依赖与构建产物（由容器内 pnpm install 重新生成）
+node_modules/
+**/node_modules/
+apps/web/dist/
+dist/
+dist-ssr/
+
+# 编辑器 / 工具 / 系统
+.git/
+.github/
+.codebuddy/
+.idea/
+.vscode/
+*.log
+*.local
+
+# 文档（非构建必需）
+**/*.md
+README.md
+LICENSE
