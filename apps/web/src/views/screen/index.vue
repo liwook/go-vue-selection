@@ -87,6 +87,7 @@
 import * as echarts from 'echarts'
 import 'echarts-liquidfill'
 import type { EChartsOption } from 'echarts'
+import type { TopLevelFormatterParams } from 'echarts/types/dist/shared'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EChart from '@/components/EChart.vue'
@@ -169,13 +170,21 @@ const ageOption = computed<EChartsOption>(() => ({
 const mapOption = computed<EChartsOption>(() => ({
   tooltip: {
     trigger: 'item',
-    formatter: '{b}<br/>预警值：{c}',
+    // 自定义 formatter，避免未配置预警的省份悬停时显示 NaN
+    formatter: (params: TopLevelFormatterParams) => {
+      const item = Array.isArray(params) ? params[0] : params
+      const name = item?.name ?? ''
+      const raw = item?.value
+      const v = typeof raw === 'number' && !Number.isNaN(raw) ? raw : null
+      return v === null ? `${name}<br/>预警值：暂无` : `${name}<br/>预警值：${v}`
+    },
   },
   visualMap: {
     min: 0,
     max: 100,
-    left: 16,
+    right: 16,
     bottom: 16,
+    orient: 'horizontal',
     text: ['高', '低'],
     textStyle: { color: '#cfe4ff' },
     calculable: true,
@@ -186,6 +195,9 @@ const mapOption = computed<EChartsOption>(() => ({
       type: 'map',
       map: 'china',
       roam: false,
+      // 放大并居中显示，避免地图区域显小
+      layoutCenter: ['50%', '50%'],
+      layoutSize: '120%',
       label: { show: false },
       itemStyle: {
         areaColor: '#0a1a3a',
@@ -361,11 +373,16 @@ const channelOption = computed<EChartsOption>(() => ({
     width: 120px;
     height: 2px;
     background: linear-gradient(90deg, transparent, #4fc3f7);
+
+    // 为左上角的"返回首页"按钮预留空间
+    &:first-of-type {
+      margin-left: 110px;
+    }
   }
 
   &__back {
     position: absolute;
-    right: 24px;
+    left: 24px;
   }
 }
 
