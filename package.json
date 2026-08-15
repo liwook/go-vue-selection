@@ -1,7 +1,7 @@
 {
   "name": "go-vue-selection",
   "scripts": {
-    "prepare": "lefthook install",
+    "prepare": "lefthook install || true",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint",
