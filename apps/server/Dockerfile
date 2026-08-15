@@ -23,14 +23,15 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 COPY . .
 
 # api/docs.go 被 .gitignore 忽略、不进 git，需在容器内用 swag 现生成
-# --parseDependency 解析外部包（如 types/）的结构体字段
-# --parseInternal 扫描 internal/ 目录
-# 先基于 go.mod 锁定的版本预编译 swag 二进制（走 module cache，二次构建秒级命中缓存），
-# 取代原先 `go run` 每次现拉源码编译的慢路径（约 60s+）
+# --parseInternal 扫描 internal/ 目录；注解引用的类型（types/、result/）均在本项目
+#   内部包内，无需 --parseDependency（解析第三方依赖会大幅拖慢，且产物一致）
+# 先基于 go.mod 锁定的版本预编译 swag 二进制，并复用 go build cache，
+# 二次构建秒级命中缓存；取代原先 `go run` 每次现拉源码编译的慢路径（约 60s+）
 RUN --mount=type=cache,target=/go/pkg/mod \
-    go build -o /usr/local/bin/swag github.com/swaggo/swag/cmd/swag
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /usr/local/bin/swag github.com/swaggo/swag/cmd/swag@v1.16.4
 RUN --mount=type=cache,target=/go/pkg/mod \
-    swag init -g main.go -o api --parseDependency --parseInternal
+    swag init -g main.go -o api --parseInternal
 
 # 编译成二进制可执行文件 app
 # 复用 mod cache 与 go build cache，大幅加速二次构建

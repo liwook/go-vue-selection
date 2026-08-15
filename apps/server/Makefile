@@ -8,7 +8,7 @@ PKG := ./...
 
 ## swagger: 根据代码注解生成 OpenAPI 文档到 api/ 目录
 swagger:
-	$(GO) run github.com/swaggo/swag/cmd/swag init -g main.go -o api --parseDependency --parseInternal
+	$(GO) run github.com/swaggo/swag/cmd/swag init -g main.go -o api --parseInternal
 
 ## test: 运行全部单元测试（默认）
 test: test-unit
