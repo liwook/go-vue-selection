@@ -4,6 +4,9 @@
     <header class="screen-header">
       <span class="deco-line" />
       <h1>智游云枢 · 智慧旅游可视化大数据展示平台</h1>
+      <el-button class="screen-header__back" type="primary" plain @click="goHome">
+        返回首页
+      </el-button>
       <span class="deco-line" />
     </header>
 
@@ -58,15 +61,21 @@
       </section>
       <section class="col col-right">
         <div class="chart-card">
-          <div class="chart-card__title">热门景区游客量 TOP5</div>
+          <div class="chart-card__title">
+            热门景区游客量 TOP5
+          </div>
           <EChart :option="spotOption" />
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">年度游客量对比</div>
+          <div class="chart-card__title">
+            年度游客量对比
+          </div>
           <EChart :option="yearOption" />
         </div>
         <div class="chart-card">
-          <div class="chart-card__title">预约渠道分布</div>
+          <div class="chart-card__title">
+            预约渠道分布
+          </div>
           <EChart :option="channelOption" />
         </div>
       </section>
@@ -78,17 +87,21 @@
 import * as echarts from 'echarts'
 import 'echarts-liquidfill'
 import type { EChartsOption } from 'echarts'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import EChart from '@/components/EChart.vue'
 import chinaJson from './china.json'
 import { useScreenData } from './useScreenData'
 
-const { data } = useScreenData()
+// 注册中国地图：必须放在模块顶层（import 后立即执行），
+// 确保在子组件 EChart 的 onMounted 调用 setOption 之前地图已注册，否则地图空白。
+echarts.registerMap('china', chinaJson as Parameters<typeof echarts.registerMap>[1])
 
-onMounted(() => {
-  // 注册中国地图（中列地图使用）
-  echarts.registerMap('china', chinaJson as Parameters<typeof echarts.registerMap>[1])
-})
+const { data } = useScreenData()
+const $router = useRouter()
+
+// 返回首页（走 router 导航，确保视图正确切换）
+const goHome = () => $router.push('/home')
 
 // 左列：水球图（实时游客占比）
 const liquidOption = computed(
@@ -327,6 +340,7 @@ const channelOption = computed<EChartsOption>(() => ({
 }
 
 .screen-header {
+  position: relative;
   height: 72px;
   display: flex;
   align-items: center;
@@ -347,6 +361,11 @@ const channelOption = computed<EChartsOption>(() => ({
     width: 120px;
     height: 2px;
     background: linear-gradient(90deg, transparent, #4fc3f7);
+  }
+
+  &__back {
+    position: absolute;
+    right: 24px;
   }
 }
 
