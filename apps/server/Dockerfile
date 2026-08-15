@@ -49,7 +49,9 @@ RUN apk add --no-cache ca-certificates wget \
 # 从builder镜像中把静态文件和配置拷贝到根目录
 # 只复制应用自身配置文件，避免覆盖/搬动系统 /etc 下的只读文件（hosts/resolv.conf）
 COPY --from=builder /build/static /static
-COPY --from=builder /build/etc/config.yaml /etc/config.yaml
+# 克隆的代码里没有真实 config.yaml（被 .gitignore 忽略），用 example 作默认底配置。
+# 容器内 postgres 连接、日志输出、jwt_secret 等由 compose 注入的环境变量覆盖。
+COPY --from=builder /build/etc/config.yaml.example /etc/config.yaml
 
 # 从builder镜像中把 app 拷贝到根目录
 COPY --from=builder /build/app /app

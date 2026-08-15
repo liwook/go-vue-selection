@@ -43,14 +43,13 @@ services:
       VUE_ADMIN_POSTGRES_USER: postgres
       VUE_ADMIN_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       VUE_ADMIN_POSTGRES_DBNAME: vue_admin
+      # 覆盖 config.yaml.example 里的 CHANGE_ME 占位密钥，避免生产/调试使用弱默认密钥
+      VUE_ADMIN_AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
     ports:
       - "9000:9000"
       # pprof 调试端口（仅当容器内 config.yaml 的 pprof.enabled=true 时才实际监听）。
       # 映射到宿主机方便用 `go tool pprof http://127.0.0.1:6060/...` 在宿主机抓采样。
       - "6060:6060"
-    # 挂载 etc/ 下的 PG 配置文件覆盖容器内的 /etc/config.yaml
-    volumes:
-      - ./etc/config.yaml:/etc/config.yaml
     # 存活探针：容器内以非 root 用户运行，使用 alpine 自带的 wget 探 /health 接口
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9000/health"]
