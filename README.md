@@ -29,20 +29,13 @@ go-vue-selection/
     └── web/              # Vue3 + Vite + TS（name: vue_admin）
 ```
 
-## 技术栈与工程化
+## 技术栈
 
-| 层 | 工具 |
-| --- | --- |
-| 前端框架 | Vue3 + Vite + TypeScript |
-| 前端 lint + 格式化 | Biome（`.js/.ts/.vue<script>`，主力，不使用 Prettier） |
-| 前端模板检查 | ESLint（仅 `.vue` 的 `<template>`） |
-| 类型检查 | vue-tsc（提交前 `pre-commit` 拦截 + 纳入 `build`） |
-| 提交规范 | commitlint（Conventional Commits） |
-| 后端检查 | golangci-lint + `gofmt` + `go vet ./...` |
-| 统一钩子 | lefthook（前后端一起管） |
-| 包管理 | 强制 pnpm（禁止 npm） |
+- 前端：Vue3 + Vite + TypeScript，UI 用 Element Plus，请求封装用 `openapi-fetch`（类型来自 Swagger 生成的 `src/api/schema.d.ts`，clone 即跑）
+- 后端：Go + Gin，接口经 Swagger 生成 OpenAPI schema，配置走 `apps/server/etc/config.yaml`（可用 `VUE_ADMIN_*` 环境变量覆盖）
+- 数据：PostgreSQL（容器化自带 18.3），前端构建为纯静态产物，由 Nginx / Docker 托管
 
-> 后端接口经 Swagger 生成 OpenAPI schema，前端用 `openapi-fetch` 生成类型安全的 `src/api/schema.d.ts`（已提交，clone 即跑）。详见 `工程化配置指南.md`。
+> 工程化（pnpm workspace / Biome / lefthook / commitlint 等）配置详解见 `工程化配置指南.md`。
 
 ## 环境要求
 
@@ -77,34 +70,8 @@ docker compose up -d
 
 > 根目录 `pnpm dev` 仅启动前端；后端需单独运行。容器化部署时由 `docker-compose.yaml` 的环境变量（前缀 `VUE_ADMIN_`，如 `VUE_ADMIN_POSTGRES_HOST=pg`）覆盖数据库与日志，日志统一输出 stdout，首次启动自动执行 `apps/server/init-sql/` 下建表脚本。
 
-## 后端配置速览（`apps/server/etc/config.yaml`）
-
-| 段 | 关键字段 | 说明 |
-| --- | --- | --- |
-| 顶层 | `port` | HTTP 监听端口，默认 `9000` |
-| `postgres` | `host`/`port`/`user`/`password`/`dbname` | PostgreSQL 连接，可用 `VUE_ADMIN_POSTGRES_*` 覆盖 |
-| `log` | `output`（`file`/`stdout`/`both`） | Docker 下建议 `stdout` |
-| `auth` | `jwt_secret`/`jwt_expire` | JWT 密钥与过期时长（小时） |
-
-常用后端命令（在 `apps/server` 下）：`make build` / `make vet` / `make test-unit` / `make test-it` / `make swagger`。更完整的后端设计与测试（含集成测试 `-race` 竞态检测）见 `apps/server/docs/`。
-
-## 常用脚本
-
-| 命令 | 说明 |
-| --- | --- |
-| `pnpm dev` | 启动前端开发服务器（仅前端） |
-| `pnpm --filter web lint` | 前端 Biome 检查（lint + 格式化） |
-| `pnpm --filter web lint:vue` | 前端 ESLint 仅查 `.vue` 模板 |
-| `pnpm --filter web format` | 前端 Biome 格式化 |
-| `pnpm --filter web build` | 前端类型检查（vue-tsc）+ 构建 |
-| `pnpm --filter web build:prod` | 生产模式构建（同 build，显式 `production`） |
-| `cd apps/server && golangci-lint run ./...` | 后端聚合 lint |
-| `cd apps/server && go vet ./...` | 后端静态检查 |
-
-## 提交规范
-
-提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/)，由 `lefthook` 的 `commit-msg` 钩子经 `commitlint` 校验；`pre-commit` 并行执行前端 Biome + ESLint(`.vue`) + `vue-tsc -b` 类型检查 + 后端 `gofmt` + `go vet`。详见 `工程化配置指南.md`。
+后端设计与测试（含集成测试 `-race` 竞态检测）、`make` 命令与 `config.yaml` 字段说明见 `apps/server/docs/`。
 
 ## 生产部署
 
-前端纯静态产物，打包与 Nginx / Docker 部署见 [`apps/web/docs/13.阶段16·打包与上线部署.md`](./apps/web/docs/13.阶段16·打包与上线部署.md)。
+前端构建为纯静态产物，打包与 Nginx / Docker 部署见 [`apps/web/docs/13.阶段16·打包与上线部署.md`](./apps/web/docs/13.阶段16·打包与上线部署.md)。
