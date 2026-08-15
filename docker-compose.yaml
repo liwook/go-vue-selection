@@ -2,6 +2,8 @@
 # 使用：在仓库根目录执行
 #   1. cp apps/server/.env.example apps/server/.env   # 填入 POSTGRES_PASSWORD 与 AUTH_JWT_SECRET
 #   2. docker compose up -d --build
+# 说明：compose 默认只读取与自身同目录（根目录）的 .env，故此处通过 env_file 显式
+#      指定 apps/server/.env，pg/server 服务所需的密钥变量从该文件加载。
 # 访问：http://localhost  （管理后台，/screen 为大屏）
 # 说明：对外仅暴露 80（前端 Nginx），/api 由 Nginx 反代到 server:9000；
 #       PostgreSQL 端口不暴露给宿主机，仅在 compose 网络内可达。
@@ -10,6 +12,8 @@ services:
   pg:
     image: postgres:18.3-alpine
     container_name: vue_admin_pg
+    env_file:
+      - apps/server/.env
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -35,6 +39,8 @@ services:
     image: vue-admin-backend:latest
     container_name: vue_admin_backend
     restart: always
+    env_file:
+      - apps/server/.env
     environment:
       TZ: Asia/Shanghai
       # 容器内日志打到 stdout，由 docker 日志系统采集
