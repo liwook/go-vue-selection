@@ -96,16 +96,6 @@ func ErrorWithMsg(c *gin.Context, code ResCode, msg string) {
 - `BB`（中两位）：模块 `00=通用 01=用户 02=角色 03=菜单 …`
 - `CC`（后两位）：错误序号
 
-
-
-
-
-
-
-
-
-
-
 ```go
 type ResCode int
 
@@ -346,7 +336,6 @@ Go 代码里绝对不能写重试？"
    Token"，在代码里进行有限次数的重试，以保证最终一致性。
 
 > ### 总监视角的延伸（MQ 消费者场景）
-
 >
 > 如果你是在 NATS/RabbitMQ 的消费者里写逻辑，用 `pgx.BeginFunc` 包裹事务。遇到 PG
 > 切换报错，**连重试的念头都不要有，直接 return error，坚决不 ACK**。让 NATS

@@ -119,15 +119,12 @@ handler
 
 ### handler
 
-
-
 - **入参**：`p := new(types.ParamXxx)` → `c.ShouldBindJSON(p)`
 - **出参**：一律过 `pkg/result`（`result.Success` / `result.Error`）
 - **ctx**：从 `c.Request.Context()` 取出，作为首参传给 service
 - **不构造 `model.Xxx`**，只把 `types.ParamXxx` 往下传
 
 ### service
-
 
 - **入参**：收 `*types.ParamXxx`（或基础类型）
 - **内部**：用 `model.Xxx` 与 repository 交互
