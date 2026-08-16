@@ -4,6 +4,7 @@
       <CategoryCascader v-model:c1="c1Id" v-model:c2="c2Id" v-model:c3="c3Id" />
 
       <el-button
+        v-auth="'btn.Category.add'"
         type="primary"
         :icon="Plus"
         style="margin-top: 12px"
