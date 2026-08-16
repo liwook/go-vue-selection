@@ -20,8 +20,10 @@ router.beforeEach(async (to, _from, next) => {
 
   // ① 已登录：放行
   if (token) {
-    if (to.path === '/login') {
-      next({ path: '/' }) // 已登录还去登录页？直接打回首页
+    // 目标本身就是白名单（登录页 / 404），直接放行，不触发任何用户信息请求
+    // 避免「localStorage 残留旧 token + 后端 500 → 跳首页失败 → 跳回登录页」的循环
+    if (whiteList.includes(to.path)) {
+      next()
     } else {
       try {
         // 同一个 session 内只拉一次用户信息并挂载一次动态路由
