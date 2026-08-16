@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { EChartsOption } from '@/components/echarts'
 import echarts from '@/components/echarts'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   option: EChartsOption

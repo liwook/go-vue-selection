@@ -62,7 +62,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes('node_modules/echarts') || id.includes('node_modules/zrender') || id.includes('echarts-liquidfill')) {
+            if (
+              id.includes('node_modules/echarts') ||
+              id.includes('node_modules/zrender') ||
+              id.includes('echarts-liquidfill')
+            ) {
               return 'echarts'
             }
             if (id.includes('node_modules')) {

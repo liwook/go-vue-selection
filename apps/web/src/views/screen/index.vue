@@ -84,10 +84,10 @@
 </template>
 
 <script setup lang="ts">
-import echarts, { type EChartsOption, type TopLevelFormatterParams } from '@/components/echarts'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EChart from '@/components/EChart.vue'
+import echarts, { type EChartsOption, type TopLevelFormatterParams } from '@/components/echarts'
 import chinaJson from './china.json'
 import { useScreenData } from './useScreenData'
 
