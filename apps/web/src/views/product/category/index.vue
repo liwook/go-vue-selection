@@ -3,21 +3,23 @@
     <el-card>
       <CategoryCascader v-model:c1="c1Id" v-model:c2="c2Id" v-model:c3="c3Id" />
 
-      <el-button
-        v-auth="'btn.Category.add'"
-        type="primary"
-        :icon="Plus"
-        style="margin-top: 12px"
-        :disabled="!canAdd"
-        @click="openAdd"
-      >
-        新增{{ addLabel }}
-      </el-button>
+      <template v-if="c1Id">
+        <el-button
+          v-auth="'btn.Category.add'"
+          type="primary"
+          :icon="Plus"
+          style="margin-top: 12px"
+          :disabled="!canAdd"
+          @click="openAdd"
+        >
+          新增{{ addLabel }}
+        </el-button>
 
-      <el-table v-loading="loading" :data="tableData" border style="margin-top: 12px">
-        <el-table-column type="index" label="序号" width="80" />
-        <el-table-column prop="name" label="分类名称" />
-      </el-table>
+        <el-table v-loading="loading" :data="tableData" border style="margin-top: 12px">
+          <el-table-column type="index" label="序号" width="80" />
+          <el-table-column prop="name" label="分类名称" />
+        </el-table>
+      </template>
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="`新增${addLabel}`">
