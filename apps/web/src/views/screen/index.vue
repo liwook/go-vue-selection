@@ -30,7 +30,7 @@
           <div class="chart-card__title">
             实时游客占比
           </div>
-          <EChart :option="liquidOption" />
+          <LiquidBall :value="data.realTimeStats.trend" />
         </div>
         <div class="chart-card">
           <div class="chart-card__title">
@@ -88,6 +88,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EChart from '@/components/EChart.vue'
 import echarts, { type EChartsOption, type TopLevelFormatterParams } from '@/components/echarts'
+import LiquidBall from '@/components/LiquidBall.vue'
 import chinaJson from './china.json'
 import { useScreenData } from './useScreenData'
 
@@ -100,28 +101,6 @@ const $router = useRouter()
 
 // 返回首页（走 router 导航，确保视图正确切换）
 const goHome = () => $router.push('/home')
-
-// 左列：水球图（实时游客占比）
-const liquidOption = computed(
-  () =>
-    ({
-      series: [
-        {
-          type: 'liquidFill',
-          radius: '70%',
-          data: [data.value.realTimeStats.trend],
-          color: ['#4fc3f7'],
-          backgroundStyle: { color: 'transparent', borderColor: 'transparent' },
-          outline: { show: false },
-          label: {
-            formatter: () => `${Math.round(data.value.realTimeStats.trend * 100)}%`,
-            fontSize: 28,
-            color: '#ffffff',
-          },
-        },
-      ],
-    }) as EChartsOption,
-)
 
 // 左列：男女比例
 const genderOption = computed<EChartsOption>(() => ({
