@@ -74,6 +74,10 @@ services:
     # 仅暴露前端 80，/api 由容器内 Nginx 反代到 server:9000
     ports:
       - "80:80"
+    # 运行时挂载 Nginx 配置：改配置只需编辑宿主机文件后 restart，无需重建镜像
+    # 相对路径以 compose 文件所在目录为基准（即仓库根目录）
+    volumes:
+      - ./apps/web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       server:
         condition: service_healthy
