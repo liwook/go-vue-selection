@@ -19,7 +19,7 @@
         <el-table-column prop="description" label="描述" />
         <el-table-column label="操作" width="220">
           <template #default="{ row }">
-            <el-button size="small" type="primary" @click="openAddSku(row)">
+            <el-button v-auth="'btn.Spu.addsku'" size="small" type="primary" @click="openAddSku(row)">
               添加 SKU
             </el-button>
             <el-button v-auth="'btn.Spu.update'" size="small" :icon="Edit" @click="openSpuEdit(row)" />
