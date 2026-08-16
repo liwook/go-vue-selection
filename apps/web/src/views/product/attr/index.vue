@@ -120,10 +120,10 @@ function openEdit(row: Attr) {
   dialogVisible.value = true
 }
 function addValue() {
-  form.value.attrValueList!.push({ valueName: '' })
+  form.value.attrValueList?.push({ valueName: '' })
 }
 function removeValue(i: number) {
-  form.value.attrValueList!.splice(i, 1)
+  form.value.attrValueList?.splice(i, 1)
 }
 
 async function save() {

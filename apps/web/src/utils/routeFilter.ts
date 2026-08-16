@@ -5,10 +5,10 @@ import type { RouteRecordRaw } from 'vue-router'
 export function filterAsyncRoute(asyncRoute: RouteRecordRaw[], routes: string[]): RouteRecordRaw[] {
   // 小写集合只算一次，递归里复用
   const routeNames = routes.map((item: string) => item.toLowerCase())
-  return asyncRoute.reduce((acc: RouteRecordRaw[], item: any) => {
+  return asyncRoute.reduce((acc: RouteRecordRaw[], item: RouteRecordRaw) => {
     // ① 如果当前 item 没有 children，直接按 name 过滤（整体路由）
     if (!item.children) {
-      if (routeNames.includes(item.name as string)) {
+      if (item.name && routeNames.includes(String(item.name).toLowerCase())) {
         acc.push(item)
       }
     } else {
@@ -19,7 +19,7 @@ export function filterAsyncRoute(asyncRoute: RouteRecordRaw[], routes: string[])
         acc.push({
           ...item,
           children: filteredChildren,
-        } as RouteRecordRaw)
+        })
       }
     }
     return acc

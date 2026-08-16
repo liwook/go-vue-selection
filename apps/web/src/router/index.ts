@@ -45,7 +45,7 @@ router.beforeEach(async (to, _from, next) => {
         } else {
           next()
         }
-      } catch (error) {
+      } catch (_error) {
         // 获取用户信息失败（token 失效等）→ 清登录态跳登录
         userStore.token = ''
         userStore.menuRoutes = []
