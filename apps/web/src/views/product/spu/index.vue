@@ -3,12 +3,16 @@
     <!-- 场景 0：SPU 列表 -->
     <el-card v-if="scene === 0">
       <CategoryCascader v-model:c1="c1Id" v-model:c2="c2Id" v-model:c3="c3Id" />
+      <el-text v-if="!c3Id" type="info" size="small" style="display: block; margin: 8px 0 -4px">
+        请先选择三级分类，再新增 SPU。
+      </el-text>
       <el-button
         v-auth="'btn.Spu.add'"
         type="primary"
         :icon="Plus"
         style="margin-top: 12px"
         :disabled="!c3Id"
+        :title="!c3Id ? '请先选择三级分类' : ''"
         @click="openSpuAdd"
       >
         新增 SPU
