@@ -84,10 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import * as echarts from 'echarts'
-import 'echarts-liquidfill'
-import type { EChartsOption } from 'echarts'
-import type { TopLevelFormatterParams } from 'echarts/types/dist/shared'
+import echarts, { type EChartsOption, type TopLevelFormatterParams } from '@/components/echarts'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EChart from '@/components/EChart.vue'

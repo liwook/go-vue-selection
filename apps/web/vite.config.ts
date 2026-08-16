@@ -56,6 +56,23 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    build: {
+      // 拆 vendor chunk：把体积大且基本不变的 echarts 单独成包，
+      // 浏览器可并行下载 + 长期缓存命中后秒开，避免全量塞进 screen chunk 拖慢首屏。
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/echarts') || id.includes('node_modules/zrender') || id.includes('echarts-liquidfill')) {
+              return 'echarts'
+            }
+            if (id.includes('node_modules')) {
+              return 'vendor'
+            }
+          },
+        },
+      },
+    },
+
     // 仅 pnpm run dev 时生效，pnpm run build:prod 打包时此配置被忽略。
     // 后端接口前缀为 /api/v1/，前端 baseURL 用 /api + 请求路径 /v1/... 拼成 /api/v1/...，
     // 因此代理【不】重写（剥离）/api 前缀，直接原样转发，避免把 /api 误删导致 404。
