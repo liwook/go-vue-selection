@@ -47,8 +47,8 @@ const greeting = computed(() => {
   return '晚上好'
 })
 
-// 个人信息页后续阶段(ACL)再做，这里先占位
-const goProfile = () => {}
+// 个人信息：跳到 layout 下 /profile（hidden: true，不出现在左侧菜单）
+const goProfile = () => router.push('/profile')
 
 // 退出登录：清 token/状态后主动跳回登录页
 const logout = async () => {

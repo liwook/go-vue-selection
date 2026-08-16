@@ -37,6 +37,13 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/home/index.vue'),
         meta: { title: '首页', icon: 'HomeFilled' },
       },
+      // 个人信息：从右上角头像下拉进入，不在左侧菜单显示
+      {
+        path: 'profile',
+        name: 'profile',
+        component: () => import('@/views/profile/index.vue'),
+        meta: { title: '个人信息', hidden: true },
+      },
     ],
   },
   // 数据大屏（全屏独立页）
