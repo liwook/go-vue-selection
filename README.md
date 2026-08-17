@@ -31,8 +31,9 @@ go-vue-selection/
 - Node.js ≥ 20（建议 LTS）
 - [pnpm](https://pnpm.io/)（`corepack enable` 或 `npm i -g pnpm`；仓库锁定 `pnpm@11.20.0`）
 - Go 1.26+
-- Docker + Docker Compose（仅容器化启动时需要；镜像自带 PostgreSQL 18.3）
-- PostgreSQL：容器化方式由镜像提供；本地开发方式二需自备可达的 PostgreSQL 实例
+- Docker + Docker Compose（仅容器化启动时需要）
+- PostgreSQL：容器化方式由 docker-compose 中的 pg 服务（postgres:18.3-alpine）提供
+- 两种启动方式均依赖 PostgreSQL：方式一由 docker-compose 的 pg 服务提供；方式二可用自备实例或 docker 启动的 PG
 
 ## 快速开始
 
@@ -68,12 +69,12 @@ cp apps/server/etc/config.yaml.example apps/server/etc/config.yaml
 cd apps/server && docker compose up -d pg
 #   - 容器内 5432 映射到宿主机 127.0.0.1:5432，正好对上后端默认配置
 
-# 5. 后端本地运行（需已装 Go）
+# 5. 后端本地运行（需已装 Go，沿用上一步已 cd 的 apps/server 目录）
 #    - 先生成 Swagger 文档文件（swag 命令可全局安装：go install github.com/swaggo/swag/cmd/swag@latest）
-cd apps/server && swag init -g main.go -o api --parseInternal
-cd apps/server && go run .
+swag init -g main.go -o api --parseInternal
+go run .
 
-# 6. 最后启动前端开发服务器（5173），其 /api 代理到后端 :9000，故建议后端就绪后再起
+# 6. 另开一个新终端启动前端开发服务器（5173），其 /api 代理到后端 :9000，故建议后端就绪后再起
 pnpm dev
 ```
 
