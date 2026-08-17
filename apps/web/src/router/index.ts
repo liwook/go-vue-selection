@@ -51,6 +51,8 @@ router.beforeEach(async (to) => {
       return true
     } catch (_error) {
       // 获取用户信息失败（token 失效等）→ 清登录态跳登录
+      // 注意：若拦截器已对鉴权错误兜底清过登录态，这里 clearAuth 幂等无副作用。
+      // 对于非鉴权错误（如 500），也清登录态回登录页，避免卡在受限页面。
       userStore.clearAuth()
       return { path: '/login' }
     }
