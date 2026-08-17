@@ -27,6 +27,8 @@ var (
 	ErrorUserNotExist  = errors.New("用户名或密码错误")
 	ErrorUserExist     = errors.New("用户名已存在")
 	ErrorPasswordWrong = errors.New("用户名或密码错误")
+	// ErrorUserNotFound 按 user_id 查不到用户（身份已不存在：被删/数据重建），区别于登录时的 ErrorUserNotExist
+	ErrorUserNotFound = errors.New("用户不存在")
 )
 
 // hashPassword 使用 bcrypt 对明文密码进行哈希
@@ -88,7 +90,9 @@ func (d *UserRepo) GetUserById(ctx context.Context, userID int64) (user *model.U
 	u, err := d.q.User.WithContext(ctx).Where(d.q.User.UserID.Eq(userID)).First()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
+			// 按 user_id 查不到用户：身份已不存在，返回明确的哨兵错误而非 (nil, nil)，
+			// 避免调用方在 user==nil 时解引用 panic。
+			return nil, ErrorUserNotFound
 		}
 		return nil, err
 	}

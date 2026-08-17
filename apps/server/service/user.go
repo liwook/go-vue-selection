@@ -78,6 +78,12 @@ func (u *userService) SignUp(ctx context.Context, p *types.ParamUserSignUp) (err
 func (u *userService) GetUserInfo(ctx context.Context, userID int64) (*types.ResponseUserInfo, error) {
 	user, err := u.userRepo.GetUserById(ctx, userID)
 	if err != nil {
+		if errors.Is(err, repository.ErrorUserNotFound) {
+			// token 携带的身份已不存在（用户被删 / 数据重建），按无效 token 处理，避免下面对 nil 解引用 panic
+			slog.Warn("查询用户信息失败：用户不存在（token 失效或数据已变更）",
+				slog.Int64("user_id", userID))
+			return nil, errs.Wrap(result.CodeInvalidToken, err)
+		}
 		slog.Error("查询用户信息失败",
 			slog.Int64("user_id", userID),
 			slog.Any("error", err))
