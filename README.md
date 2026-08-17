@@ -62,14 +62,15 @@ cp apps/web/.env.example apps/web/.env.development
 
 # 3. 准备后端本地配置
 cp apps/server/etc/config.yaml.example apps/server/etc/config.yaml
-#   - 模板默认即连 127.0.0.1:5432、密码 postgres，与本仓库本地 pg 容器默认值一致，首次无需修改
+#   - 若 PG 是远程的，请把 config.yaml 的 postgres.host 改成对应的远程 IP（密码也一并对应修改）
 
 # 4. 启动 PostgreSQL 容器（后端依赖 PG，需先起；无需 .env，密码有默认值 postgres）
 cd apps/server && docker compose up -d pg
 #   - 容器内 5432 映射到宿主机 127.0.0.1:5432，正好对上后端默认配置
-#   - 若你的 PG 跑在别处（如远程 Linux），改 config.yaml 的 postgres 段指向它即可
 
 # 5. 后端本地运行（需已装 Go）
+#    - 先生成 Swagger 文档文件（swag 命令可全局安装：go install github.com/swaggo/swag/cmd/swag@latest）
+cd apps/server && swag init -g main.go -o api --parseInternal
 cd apps/server && go run .
 
 # 6. 最后启动前端开发服务器（5173），其 /api 代理到后端 :9000，故建议后端就绪后再起
