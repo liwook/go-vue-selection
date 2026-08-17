@@ -45,10 +45,10 @@ const (
 	CodeUserInUse       = ACLUserBase + 4 // 用户被引用（如已分配角色），不允许删除
 
 	// 角色模块（BB=02）
-	ACLRoleBase    = ACLBase + 0200
-	CodeRoleDBErr  = ACLRoleBase + 1 // 角色数据访问失败
-	CodeRoleExist  = ACLRoleBase + 2 // 角色已存在
-	CodeRoleInUse  = ACLRoleBase + 3 // 角色被引用（如已绑定菜单/用户），不允许删除
+	ACLRoleBase   = ACLBase + 0200
+	CodeRoleDBErr = ACLRoleBase + 1 // 角色数据访问失败
+	CodeRoleExist = ACLRoleBase + 2 // 角色已存在
+	CodeRoleInUse = ACLRoleBase + 3 // 角色被引用（如已绑定菜单/用户），不允许删除
 
 	// 菜单模块（BB=03）
 	ACLMenuBase       = ACLBase + 0300
@@ -68,10 +68,10 @@ const (
 	// CodeProductCommonXxx 待补充
 
 	// 品牌模块（BB=01）
-	ProductBrandBase    = ProductBase + 0100
-	CodeTrademarkErr    = ProductBrandBase + 1 // 品牌操作失败
-	CodeTrademarkDBErr  = ProductBrandBase + 2 // 品牌数据访问失败
-	CodeTrademarkInUse  = ProductBrandBase + 3 // 品牌被引用（如 SPU 已关联），不允许删除
+	ProductBrandBase   = ProductBase + 0100
+	CodeTrademarkErr   = ProductBrandBase + 1 // 品牌操作失败
+	CodeTrademarkDBErr = ProductBrandBase + 2 // 品牌数据访问失败
+	CodeTrademarkInUse = ProductBrandBase + 3 // 品牌被引用（如 SPU 已关联），不允许删除
 
 	// 分类模块（BB=02）
 	ProductCategoryBase = ProductBase + 0200
