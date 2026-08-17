@@ -49,13 +49,7 @@ router.beforeEach(async (to, _from, next) => {
         }
       } catch (_error) {
         // 获取用户信息失败（token 失效等）→ 清登录态跳登录
-        userStore.token = ''
-        userStore.menuRoutes = []
-        userStore.name = ''
-        userStore.avatar = ''
-        userStore.buttons = []
-        userStore.isRoutesAdded = false
-        localStorage.removeItem('token')
+        userStore.clearAuth()
         next({ path: '/login' })
       }
     }

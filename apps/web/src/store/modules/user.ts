@@ -53,12 +53,17 @@ export const useUserStore = defineStore('User', () => {
     }
   }
 
+  // 清除登录态：清 token + 清本地存储，退出登录 / token 失效统一走这里（单一数据源）
+  function clearAuth() {
+    resetUserState()
+    localStorage.removeItem('token')
+  }
+
   // 退出登录
   async function userLogout() {
     const { data: res } = await client.POST('/api/v1/acl/index/logout')
     if (res?.code !== 200) throw new Error(res?.message || '退出失败')
-    resetUserState()
-    localStorage.removeItem('token')
+    clearAuth()
   }
 
   return {
@@ -71,5 +76,6 @@ export const useUserStore = defineStore('User', () => {
     userLogin,
     getUserInfo,
     userLogout,
+    clearAuth,
   }
 })
