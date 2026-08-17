@@ -126,9 +126,10 @@ func (d *SpuRepo) BatchGetSpuSaleAttrValues(ctx context.Context, spuId int64) (m
 }
 
 func (d *SpuRepo) UpdateSpuInfo(ctx context.Context, spu *model.Spu, imageList []*model.SpuImageList, spuSaleAttrList []*model.SpuSaleAttr, spuSaleAttrValueList []*model.SaleAttrValue) error {
-	// 使用事务保证原子性：先删除该 SPU 下全部旧子表行（spu_image_list / spu_sale_attr /
-	// sale_attr_value，三张子表在 init.sql 中均无外键级联，不会随父表更新自动清理），
-	// 再更新 spu 父表并批量插入新子表行，避免每次保存都让子表记录无限翻倍累积。
+	// 使用事务保证原子性：先删除该 SPU 下全部旧子表行，再更新 spu 父表并批量插入新子表行，
+	// 避免每次保存都让子表记录无限翻倍累积。
+	// 说明：spu_image_list / spu_sale_attr 在 init.sql 中已配 ON DELETE CASCADE，删旧行会连带清其从表；
+	// 而 sale_attr_value 无外键级联，必须在此按 spu_id 显式删除，否则更新 SPU 会残留孤儿行。
 	return d.q.Transaction(func(tx *query.Query) error {
 		if _, err := tx.SpuImageList.WithContext(ctx).Where(tx.SpuImageList.SpuID.Eq(spu.SpuID)).Delete(); err != nil {
 			return fmt.Errorf("更新SPU失败(删除旧SPU图片): %w", err)
@@ -175,10 +176,13 @@ func (d *SpuRepo) UpdateSpuInfo(ctx context.Context, spu *model.Spu, imageList [
 }
 
 func (d *SpuRepo) DeleteSpu(ctx context.Context, spuId int64) (err error) {
-	// 三张子表（spu_image_list / spu_sale_attr / sale_attr_value）在 init.sql 中均未配置
-	// 外键级联，不会随父表 spu 删除而自动清理，故需手动按 spu_id 先删子表再删父表。
-	// 整个删除用事务包裹（SaleAttrValue 删除 + Spu 删除），任一失败整体回滚，
-	// 避免只删掉一半留下孤儿数据。
+	// 删除 SPU 的子表清理：
+	//   - spu_image_list / spu_sale_attr 在 init.sql 中已配 ON DELETE CASCADE，删 spu 时自动连带删除；
+	//     此处仍手动先删，作为“先子后父”的显式保险，保留无妨。
+	//   - sale_attr_value 无外键级联（init.sql 注释明确其为保持字典灵活未加外键），
+	//     必须按 spu_id 显式删除，否则会残留孤儿行。
+	// 注：下列删除未包在单一事务内，但因 CASCADE 会兜底父表删除，实际残留风险低；
+	// 如需严格原子性可改用事务包裹（非本次必需）。
 	_, err = d.q.SaleAttrValue.WithContext(ctx).Where(d.q.SaleAttrValue.SpuID.Eq(spuId)).Delete()
 	if err != nil {
 		return fmt.Errorf("删除SPU失败(删除SPU销售属性值): %w", err)
