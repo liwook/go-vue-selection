@@ -235,7 +235,7 @@ func (u *userHandler) UpdateUser(c *gin.Context) {
 	userID, err := getCurrentUserID(c)
 	if err != nil {
 		slog.Error("UpdateUser without login", slog.Any("error", err))
-		result.Error(c, result.CodeInvalidParam)
+		result.Error(c, result.CodeNeedLogin)
 		return
 	}
 	err = u.userSvc.UpdateUser(c.Request.Context(), userID, p)
@@ -270,7 +270,7 @@ func (u *userHandler) DeleteUser(c *gin.Context) {
 	operatorID, err := getCurrentUserID(c)
 	if err != nil {
 		slog.Error("DeleteUser without login", slog.Any("error", err))
-		result.Error(c, result.CodeInvalidParam)
+		result.Error(c, result.CodeNeedLogin)
 		return
 	}
 	// 禁止删除自己，避免管理员把自己锁死
@@ -303,7 +303,7 @@ func (u *userHandler) DeleteSelf(c *gin.Context) {
 	userID, err := getCurrentUserID(c)
 	if err != nil {
 		slog.Error("DeleteSelf without login", slog.Any("error", err))
-		result.Error(c, result.CodeInvalidParam)
+		result.Error(c, result.CodeNeedLogin)
 		return
 	}
 
