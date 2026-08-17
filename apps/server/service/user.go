@@ -199,6 +199,9 @@ func (u *userService) DeleteUserByAdmin(ctx context.Context, operatorID, targetU
 	}
 	if err = u.userRepo.DeleteUser(ctx, targetUserID); err != nil {
 		slog.Error("删除用户失败", slog.Int64("user_id", targetUserID), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeUserInUse, err)
+		}
 		return errs.Wrap(result.CodeUserDBErr, err)
 	}
 	return nil
@@ -208,6 +211,9 @@ func (u *userService) DeleteUserByAdmin(ctx context.Context, operatorID, targetU
 func (u *userService) DeleteSelfAccount(ctx context.Context, userID int64) (err error) {
 	if err = u.userRepo.DeleteUser(ctx, userID); err != nil {
 		slog.Error("注销用户失败", slog.Int64("user_id", userID), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeUserInUse, err)
+		}
 		return errs.Wrap(result.CodeUserDBErr, err)
 	}
 	return nil

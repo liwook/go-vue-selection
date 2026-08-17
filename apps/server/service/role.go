@@ -91,6 +91,9 @@ func (r *roleService) UpdateRole(ctx context.Context, p *types.ParamRoleUpdate) 
 func (r *roleService) DeleteRole(ctx context.Context, roleId int64) (err error) {
 	if err = r.repo.DeleteRole(ctx, roleId); err != nil {
 		slog.Error("删除角色失败", slog.Int64("role_id", roleId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeRoleInUse, err)
+		}
 		return errs.Wrap(result.CodeRoleDBErr, err)
 	}
 	return nil

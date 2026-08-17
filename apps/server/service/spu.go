@@ -243,6 +243,9 @@ func (s *spuService) UpdateSpuInfo(ctx context.Context, spu *types.Spu) error {
 func (s *spuService) DeleteSpu(ctx context.Context, spuId int64) error {
 	if err := s.repo.DeleteSpu(ctx, spuId); err != nil {
 		slog.Error("删除SPU失败", slog.Int64("spu_id", spuId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeSpuInUse, err)
+		}
 		return errs.Wrap(result.CodeSpuDBErr, err)
 	}
 	return nil

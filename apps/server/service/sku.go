@@ -281,6 +281,9 @@ func (s *skuService) CancelSaleSku(ctx context.Context, skuId int64) error {
 func (s *skuService) DeleteSku(ctx context.Context, skuId int64) error {
 	if err := s.skuRepo.DeleteSku(ctx, skuId); err != nil {
 		slog.Error("删除SKU失败", slog.Int64("sku_id", skuId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeSkuInUse, err)
+		}
 		return errs.Wrap(result.CodeSkuDBErr, err)
 	}
 	return nil

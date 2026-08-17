@@ -42,17 +42,20 @@ const (
 	CodeUserExist       = ACLUserBase + 1 // 用户名已存在
 	CodeUserDBErr       = ACLUserBase + 2 // 用户数据访问失败
 	CodeInvalidPassword = ACLUserBase + 3 // 用户名或密码错误
+	CodeUserInUse       = ACLUserBase + 4 // 用户被引用（如已分配角色），不允许删除
 
 	// 角色模块（BB=02）
-	ACLRoleBase   = ACLBase + 0200
-	CodeRoleDBErr = ACLRoleBase + 1 // 角色数据访问失败
-	CodeRoleExist = ACLRoleBase + 2 // 角色已存在
+	ACLRoleBase    = ACLBase + 0200
+	CodeRoleDBErr  = ACLRoleBase + 1 // 角色数据访问失败
+	CodeRoleExist  = ACLRoleBase + 2 // 角色已存在
+	CodeRoleInUse  = ACLRoleBase + 3 // 角色被引用（如已绑定菜单/用户），不允许删除
 
 	// 菜单模块（BB=03）
 	ACLMenuBase       = ACLBase + 0300
 	CodeMenuNodeExist = ACLMenuBase + 1 // 该节点下有子节点，不可以删除
 	CodeMenuDBErr     = ACLMenuBase + 2 // 菜单数据访问失败
 	CodeMenuExist     = ACLMenuBase + 3 // 菜单名称已存在
+	CodeMenuInUse     = ACLMenuBase + 4 // 菜单被引用（如已绑定角色），不允许删除
 )
 
 // —— Product 域（12）——
@@ -65,9 +68,10 @@ const (
 	// CodeProductCommonXxx 待补充
 
 	// 品牌模块（BB=01）
-	ProductBrandBase   = ProductBase + 0100
-	CodeTrademarkErr   = ProductBrandBase + 1 // 品牌操作失败
-	CodeTrademarkDBErr = ProductBrandBase + 2 // 品牌数据访问失败
+	ProductBrandBase    = ProductBase + 0100
+	CodeTrademarkErr    = ProductBrandBase + 1 // 品牌操作失败
+	CodeTrademarkDBErr  = ProductBrandBase + 2 // 品牌数据访问失败
+	CodeTrademarkInUse  = ProductBrandBase + 3 // 品牌被引用（如 SPU 已关联），不允许删除
 
 	// 分类模块（BB=02）
 	ProductCategoryBase = ProductBase + 0200
@@ -76,15 +80,18 @@ const (
 	// 属性模块（BB=03）
 	ProductAttrBase = ProductBase + 0300
 	CodeAttrDBErr   = ProductAttrBase + 1 // 属性数据访问失败
+	CodeAttrInUse   = ProductAttrBase + 2 // 属性被引用（如 SKU 已关联），不允许删除
 
 	// SPU 模块（BB=04）
 	ProductSPUBase = ProductBase + 0400
 	CodeSpuDBErr   = ProductSPUBase + 1 // SPU 数据访问失败
+	CodeSpuInUse   = ProductSPUBase + 2 // SPU 被引用（如 SKU 已关联），不允许删除
 
 	// SKU 模块（BB=05）
 	ProductSKUBase  = ProductBase + 0500
 	CodeSkuDBErr    = ProductSKUBase + 1 // SKU 数据访问失败
 	CodeSkuNotExist = ProductSKUBase + 2 // SKU 不存在
+	CodeSkuInUse    = ProductSKUBase + 3 // SKU 被引用，不允许删除
 )
 
 // —— 预留业务域（13+）——
@@ -99,17 +106,24 @@ var codeMsgMap = map[ResCode]string{
 	CodeUserExist:       "用户名已存在",
 	CodeUserDBErr:       "用户数据访问失败",
 	CodeInvalidPassword: "用户名或密码错误",
+	CodeUserInUse:       "该用户被引用，不允许删除",
 	CodeRoleDBErr:       "角色数据访问失败",
 	CodeRoleExist:       "角色已存在",
+	CodeRoleInUse:       "该角色被引用，不允许删除",
 	CodeMenuNodeExist:   "该节点下有子节点，不可以删除",
 	CodeMenuDBErr:       "菜单数据访问失败",
 	CodeMenuExist:       "菜单名称已存在",
+	CodeMenuInUse:       "该菜单被引用，不允许删除",
 	CodeTrademarkErr:    "品牌操作失败",
 	CodeTrademarkDBErr:  "品牌数据访问失败",
+	CodeTrademarkInUse:  "该品牌被引用，不允许删除",
 	CodeCategoryDBErr:   "分类数据访问失败",
 	CodeAttrDBErr:       "属性数据访问失败",
+	CodeAttrInUse:       "该属性被引用，不允许删除",
 	CodeSpuDBErr:        "SPU数据访问失败",
+	CodeSpuInUse:        "该SPU被引用，不允许删除",
 	CodeSkuDBErr:        "SKU数据访问失败",
+	CodeSkuInUse:        "该SKU被引用，不允许删除",
 
 	CodeDBError:     "数据库服务异常",
 	CodeRedisError:  "缓存服务异常",

@@ -103,6 +103,9 @@ func (a *attrService) GetAttr(ctx context.Context, c1Id, c2Id, c3Id int64) (attr
 func (a *attrService) DeleteAttr(ctx context.Context, attrId int64) (err error) {
 	if err = a.repo.DeleteAttr(ctx, attrId); err != nil {
 		slog.Error("删除属性失败", slog.Int64("attr_id", attrId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeAttrInUse, err)
+		}
 		return errs.Wrap(result.CodeAttrDBErr, err)
 	}
 	return nil

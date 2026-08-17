@@ -91,6 +91,9 @@ func (t *trademarkService) UpdateTrademark(ctx context.Context, p *types.ParamTm
 func (t *trademarkService) DeleteTrademark(ctx context.Context, tmId int64) error {
 	if err := t.repo.DeleteTrademark(ctx, tmId); err != nil {
 		slog.Error("删除品牌失败", slog.Int64("tm_id", tmId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeTrademarkInUse, err)
+		}
 		return errs.Wrap(result.CodeTrademarkDBErr, err)
 	}
 	return nil

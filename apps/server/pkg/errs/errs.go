@@ -3,6 +3,8 @@ package errs
 import (
 	"errors"
 
+	"github.com/jackc/pgx/v5/pgconn"
+
 	"github.com/liwook/go-vue-selection/pkg/result"
 )
 
@@ -55,4 +57,20 @@ func CodeOf(err error) result.ResCode {
 	}
 
 	return result.CodeServerBusy
+}
+
+// PostgreSQL SQLSTATE 错误码（常用子集）
+// 见 https://www.postgresql.org/docs/current/errcodes-appendix.html
+const (
+	sqlStateForeignKeyViolation = "23503" // foreign_key_violation 违反外键约束
+)
+
+// IsForeignKeyViolation 判断错误链中是否包含 PostgreSQL 外键约束冲突
+// （SQLSTATE 23503），即"被其他表引用的资源不允许删除"（ON DELETE RESTRICT 一侧）。
+// errors.AsType 会穿透 errs.Wrap 包装直达驱动层 *pgconn.PgError。
+func IsForeignKeyViolation(err error) bool {
+	if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+		return pgErr.Code == sqlStateForeignKeyViolation
+	}
+	return false
 }

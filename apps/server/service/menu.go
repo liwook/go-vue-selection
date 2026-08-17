@@ -116,6 +116,9 @@ func (m *menuService) DeleteMenu(ctx context.Context, menuId int64) (err error) 
 	err = m.repo.DeleteMenuByID(ctx, menuId)
 	if err != nil {
 		slog.Error("删除菜单失败", slog.Int64("menu_id", menuId), slog.Any("error", err))
+		if errs.IsForeignKeyViolation(err) {
+			return errs.Wrap(result.CodeMenuInUse, err)
+		}
 		return errs.Wrap(result.CodeMenuDBErr, err)
 	}
 
