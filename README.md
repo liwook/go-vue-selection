@@ -41,16 +41,14 @@ go-vue-selection/
 在**仓库根目录**执行：
 
 ```bash
-# 1. 准备环境变量（填入 POSTGRES_PASSWORD 与 AUTH_JWT_SECRET）
-cp apps/server/.env.example apps/server/.env
-
-# 2. 一条命令拉起 PostgreSQL + 后端(Go) + 前端(Nginx)
+# 无需 .env：pg 密码与 jwt_secret 均已在 compose / config.yaml.example 内置默认值
+# 1. 一条命令拉起 PostgreSQL + 后端(Go) + 前端(Nginx)
 docker compose up -d --build
 ```
 
 - 访问站点：<http://localhost>
 - 对外仅暴露 80（前端 Nginx），`/api` 由 Nginx 反代到后端 `server:9000`，数据库端口不对外暴露
-- 容器内使用 `etc/config.yaml.example` 作默认配置，postgres 连接 / 日志输出 / jwt_secret 等由 `.env` 注入，**无需本地私有 `config.yaml`**
+- 容器内使用 `etc/config.yaml.example` 作默认配置，postgres 密码与 jwt_secret 均内置默认（`postgres` / 演示密钥），**无需 `.env`、无需本地私有 `config.yaml`**；如需自定义，可用 `VUE_ADMIN_*` 环境变量覆盖（如 `VUE_ADMIN_POSTGRES_PASSWORD`、`VUE_ADMIN_AUTH_JWT_SECRET`）
 
 ### 方式二：本地开发（前后端分离，热更新）
 
@@ -58,13 +56,24 @@ docker compose up -d --build
 # 1. 安装依赖（根目录）
 pnpm install
 
-# 2. 启动前端开发服务器（5173）
-pnpm dev
+# 2. 准备前端环境变量
+cp apps/web/.env.example apps/web/.env.development
+#   然后将 .env.development 中的 API_PROXY_TARGET 改成你本地/可达的后端地址（默认 http://localhost:9000）
 
-# 3. 后端本地运行（需已装 Go，且存在 apps/server/etc/config.yaml）
-#   - config.yaml 中 postgres.host 默认为 127.0.0.1；若曾被改成其他地址，请改回你本地/可达的 PG
-#   - 启动后监听 :9000，支持 -f 指定配置文件路径
+# 3. 准备后端本地配置
+cp apps/server/etc/config.yaml.example apps/server/etc/config.yaml
+#   - 模板默认即连 127.0.0.1:5432、密码 postgres，与本仓库本地 pg 容器默认值一致，首次无需修改
+
+# 4. 启动 PostgreSQL 容器（后端依赖 PG，需先起；无需 .env，密码有默认值 postgres）
+cd apps/server && docker compose up -d pg
+#   - 容器内 5432 映射到宿主机 127.0.0.1:5432，正好对上后端默认配置
+#   - 若你的 PG 跑在别处（如远程 Linux），改 config.yaml 的 postgres 段指向它即可
+
+# 5. 后端本地运行（需已装 Go）
 cd apps/server && go run .
+
+# 6. 最后启动前端开发服务器（5173），其 /api 代理到后端 :9000，故建议后端就绪后再起
+pnpm dev
 ```
 
 - 前端开发服务器：<http://localhost:5173>

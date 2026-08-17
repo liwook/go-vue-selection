@@ -1,9 +1,7 @@
 # 全栈一键部署：前端(Nginx) + 后端(Go) + PostgreSQL
 # 使用：在仓库根目录执行
-#   1. cp apps/server/.env.example apps/server/.env   # 填入 POSTGRES_PASSWORD 与 AUTH_JWT_SECRET
-#   2. docker compose up -d --build
-# 说明：compose 默认只读取与自身同目录（根目录）的 .env，故此处通过 env_file 显式
-#      指定 apps/server/.env，pg/server 服务所需的密钥变量从该文件加载。
+#   docker compose up -d --build
+# 说明：无需 .env 文件，pg 密码与 jwt_secret 均内置默认值（postgres / 演示密钥）。
 # 访问：http://localhost  （管理后台，/screen 为大屏）
 # 说明：对外仅暴露 80（前端 Nginx），/api 由 Nginx 反代到 server:9000；
 #       PostgreSQL 端口不暴露给宿主机，仅在 compose 网络内可达。
@@ -12,10 +10,9 @@ services:
   pg:
     image: postgres:18.3-alpine
     container_name: vue_admin_pg
-    env_file:
-      - apps/server/.env
     environment:
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: vue_admin
       TZ: Asia/Shanghai
     volumes:
@@ -38,8 +35,6 @@ services:
     image: vue-admin-backend:latest
     container_name: vue_admin_backend
     restart: always
-    env_file:
-      - apps/server/.env
     environment:
       TZ: Asia/Shanghai
       # 容器内日志打到 stdout，由 docker 日志系统采集
@@ -48,8 +43,9 @@ services:
       VUE_ADMIN_POSTGRES_HOST: pg
       VUE_ADMIN_POSTGRES_PORT: "5432"
       VUE_ADMIN_POSTGRES_USER: postgres
+      VUE_ADMIN_POSTGRES_PASSWORD: postgres
       VUE_ADMIN_POSTGRES_DBNAME: vue_admin
-      # POSTGRES_PASSWORD 与 AUTH_JWT_SECRET 由 env_file (apps/server/.env) 注入，无需在此重复引用
+      # jwt_secret 使用内置演示默认密钥，无需 .env；生产请用 VUE_ADMIN_AUTH_JWT_SECRET 覆盖
     # 健康检查存活探针
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9000/health"]

@@ -5,7 +5,7 @@ services:
     container_name: vue_admin_pg
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: vue_admin
       TZ: Asia/Shanghai
     ports:
@@ -41,10 +41,10 @@ services:
       VUE_ADMIN_POSTGRES_HOST: pg
       VUE_ADMIN_POSTGRES_PORT: "5432"
       VUE_ADMIN_POSTGRES_USER: postgres
-      VUE_ADMIN_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      VUE_ADMIN_POSTGRES_PASSWORD: postgres
       VUE_ADMIN_POSTGRES_DBNAME: vue_admin
-      # 覆盖 config.yaml.example 里的 CHANGE_ME 占位密钥，避免生产/调试使用弱默认密钥
-      VUE_ADMIN_AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
+      # jwt_secret 使用 etc/config.yaml.example 中的默认演示密钥，无需 .env 注入；
+      # 生产部署请替换为强随机密钥（环境变量 VUE_ADMIN_AUTH_JWT_SECRET 仍可覆盖）
     ports:
       - "9000:9000"
       # pprof 调试端口（仅当容器内 config.yaml 的 pprof.enabled=true 时才实际监听）。
