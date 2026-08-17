@@ -82,8 +82,8 @@ const (
 	CodeSpuDBErr   = ProductSPUBase + 1 // SPU 数据访问失败
 
 	// SKU 模块（BB=05）
-	ProductSKUBase = ProductBase + 0500
-	CodeSkuDBErr   = ProductSKUBase + 1 // SKU 数据访问失败
+	ProductSKUBase  = ProductBase + 0500
+	CodeSkuDBErr    = ProductSKUBase + 1 // SKU 数据访问失败
 	CodeSkuNotExist = ProductSKUBase + 2 // SKU 不存在
 )
 
