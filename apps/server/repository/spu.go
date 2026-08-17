@@ -126,9 +126,20 @@ func (d *SpuRepo) BatchGetSpuSaleAttrValues(ctx context.Context, spuId int64) (m
 }
 
 func (d *SpuRepo) UpdateSpuInfo(ctx context.Context, spu *model.Spu, imageList []*model.SpuImageList, spuSaleAttrList []*model.SpuSaleAttr, spuSaleAttrValueList []*model.SaleAttrValue) error {
-	// 使用事务保证原子性：更新 spu 父表后再批量插入多张子表，任何一步失败都会整体回滚，
-	// 避免出现「父表已更新但子表插入失败」的部分写入。
+	// 使用事务保证原子性：先删除该 SPU 下全部旧子表行（spu_image_list / spu_sale_attr /
+	// sale_attr_value，三张子表在 init.sql 中均无外键级联，不会随父表更新自动清理），
+	// 再更新 spu 父表并批量插入新子表行，避免每次保存都让子表记录无限翻倍累积。
 	return d.q.Transaction(func(tx *query.Query) error {
+		if _, err := tx.SpuImageList.WithContext(ctx).Where(tx.SpuImageList.SpuID.Eq(spu.SpuID)).Delete(); err != nil {
+			return fmt.Errorf("更新SPU失败(删除旧SPU图片): %w", err)
+		}
+		if _, err := tx.SpuSaleAttr.WithContext(ctx).Where(tx.SpuSaleAttr.SpuID.Eq(spu.SpuID)).Delete(); err != nil {
+			return fmt.Errorf("更新SPU失败(删除旧SPU销售属性): %w", err)
+		}
+		if _, err := tx.SaleAttrValue.WithContext(ctx).Where(tx.SaleAttrValue.SpuID.Eq(spu.SpuID)).Delete(); err != nil {
+			return fmt.Errorf("更新SPU失败(删除旧SPU销售属性值): %w", err)
+		}
+
 		_, err := tx.Spu.WithContext(ctx).
 			Where(tx.Spu.SpuID.Eq(spu.SpuID)).
 			Updates(map[string]any{
@@ -164,14 +175,21 @@ func (d *SpuRepo) UpdateSpuInfo(ctx context.Context, spu *model.Spu, imageList [
 }
 
 func (d *SpuRepo) DeleteSpu(ctx context.Context, spuId int64) (err error) {
-	// 简化删除逻辑：
-	// 1. spu_image_list、spu_sale_attr 在 init.sql 中已配置 ON DELETE CASCADE，
-	//    删除父表 spu 时会由数据库自动级联删除，无需在代码里手动删除。
-	// 2. sale_attr_value 与 spu 之间没有外键（init.sql 中该表仅对 spu_id 建了索引，
-	//    未设置外键约束），不会随 spu 级联删除，因此必须在此手动删除。
+	// 三张子表（spu_image_list / spu_sale_attr / sale_attr_value）在 init.sql 中均未配置
+	// 外键级联，不会随父表 spu 删除而自动清理，故需手动按 spu_id 先删子表再删父表。
+	// 整个删除用事务包裹（SaleAttrValue 删除 + Spu 删除），任一失败整体回滚，
+	// 避免只删掉一半留下孤儿数据。
 	_, err = d.q.SaleAttrValue.WithContext(ctx).Where(d.q.SaleAttrValue.SpuID.Eq(spuId)).Delete()
 	if err != nil {
 		return fmt.Errorf("删除SPU失败(删除SPU销售属性值): %w", err)
+	}
+	_, err = d.q.SpuImageList.WithContext(ctx).Where(d.q.SpuImageList.SpuID.Eq(spuId)).Delete()
+	if err != nil {
+		return fmt.Errorf("删除SPU失败(删除SPU图片): %w", err)
+	}
+	_, err = d.q.SpuSaleAttr.WithContext(ctx).Where(d.q.SpuSaleAttr.SpuID.Eq(spuId)).Delete()
+	if err != nil {
+		return fmt.Errorf("删除SPU失败(删除SPU销售属性): %w", err)
 	}
 	_, err = d.q.Spu.WithContext(ctx).Where(d.q.Spu.SpuID.Eq(spuId)).Delete()
 	if err != nil {
