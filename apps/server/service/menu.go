@@ -30,7 +30,7 @@ func (m *menuService) GetMenu(ctx context.Context) (data []types.Menu, err error
 		return nil, errs.Wrap(result.CodeMenuDBErr, err)
 	}
 	if len(modelList) == 0 {
-		return nil, nil
+		return []types.Menu{}, nil
 	}
 	menuList := modelToMenuList(modelList)
 	menuValueList := make([]types.Menu, 0, len(menuList))
@@ -130,7 +130,7 @@ func (m *menuService) ToAssign(ctx context.Context, roleId int64) (data []types.
 		return nil, errs.Wrap(result.CodeMenuDBErr, err)
 	}
 	if len(modelList) == 0 {
-		return nil, nil
+		return []types.Menu{}, nil
 	}
 	menuList := modelToMenuList(modelList)
 	menuValueList := make([]types.Menu, 0, len(menuList))

@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/liwook/go-vue-selection/dal/model"
 	"github.com/liwook/go-vue-selection/dal/query"
@@ -160,12 +162,19 @@ func (d *SkuRepo) DeleteSku(ctx context.Context, skuId int64) (err error) {
 
 // GetSku 返回单条 SKU 的 model（不含关联子表数据）。
 // 详情页（GetSkuInfo）由 service 层继续调用 BatchGet* 拉取关联数据。
+// ErrSkuNotFound 表示 SKU 不存在（查无记录）。
+var ErrSkuNotFound = errors.New("sku not found")
+
 func (d *SkuRepo) GetSku(ctx context.Context, skuId int64) (sku *model.Sku, err error) {
-	s, err := d.q.Sku.WithContext(ctx).Where(d.q.Sku.SkuID.Eq(skuId)).First()
+	skuList, err := d.q.Sku.WithContext(ctx).Where(d.q.Sku.SkuID.Eq(skuId)).Find()
 	if err != nil {
+		slog.Error("SkuRepo.GetSku", slog.Any("error", err))
 		return nil, err
 	}
-	return s, nil
+	if len(skuList) == 0 {
+		return nil, ErrSkuNotFound
+	}
+	return skuList[0], nil
 }
 
 // GetAttrNameByAttrId 只投影 attr_name 列，避免 SELECT * 拉取整行。

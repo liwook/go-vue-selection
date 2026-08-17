@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"math"
 	"strconv"
@@ -196,7 +197,7 @@ func (s *skuService) FindBySpuId(ctx context.Context, spuId int64) ([]*types.Res
 		slog.Error("按SPU查询SKU失败", slog.Int64("spu_id", spuId), slog.Any("error", err))
 		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}
-	return s.assembleSkuInfos(ctx, skuList), nil
+	return s.assembleSkuInfos(ctx, skuList)
 }
 
 func (s *skuService) GetSkuList(ctx context.Context, page, limit int64) (*types.ResponseSkuInfoList, error) {
@@ -208,8 +209,12 @@ func (s *skuService) GetSkuList(ctx context.Context, page, limit int64) (*types.
 		slog.Error("查询SKU列表失败", slog.Any("error", err))
 		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}
+	records, err := s.assembleSkuInfos(ctx, skuList)
+	if err != nil {
+		return nil, err
+	}
 	data := &types.ResponseSkuInfoList{
-		Records:     s.assembleSkuInfos(ctx, skuList),
+		Records:     records,
 		Total:       count,
 		Size:        limit,
 		Current:     page,
@@ -221,9 +226,9 @@ func (s *skuService) GetSkuList(ctx context.Context, page, limit int64) (*types.
 
 // assembleSkuInfos 把 SKU model 列表与其关联子表数据（图片/平台属性值/销售属性值）拼装成对外 DTO 列表。
 // 关联数据通过 repo 的批量方法一次性查询，避免逐条 SKU 各发 3 次查询产生的 N+1 问题。
-func (s *skuService) assembleSkuInfos(ctx context.Context, skuList []*model.Sku) []*types.ResponseSkuInfo {
+func (s *skuService) assembleSkuInfos(ctx context.Context, skuList []*model.Sku) ([]*types.ResponseSkuInfo, error) {
 	if len(skuList) == 0 {
-		return []*types.ResponseSkuInfo{}
+		return []*types.ResponseSkuInfo{}, nil
 	}
 
 	// 收集本批 SKU 的 ID
@@ -236,17 +241,17 @@ func (s *skuService) assembleSkuInfos(ctx context.Context, skuList []*model.Sku)
 	imgMap, err := s.skuRepo.BatchGetSkuImages(ctx, skuIDs)
 	if err != nil {
 		slog.Error("批量查询SKU图片失败", slog.Any("error", err))
-		return nil
+		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}
 	attrMap, err := s.skuRepo.BatchGetSkuAttrValues(ctx, skuIDs)
 	if err != nil {
 		slog.Error("批量查询SKU平台属性值失败", slog.Any("error", err))
-		return nil
+		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}
 	saleMap, err := s.skuRepo.BatchGetSkuSaleAttrValues(ctx, skuIDs)
 	if err != nil {
 		slog.Error("批量查询SKU销售属性值失败", slog.Any("error", err))
-		return nil
+		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}
 
 	// 按 skuID 拼装成 DTO，保持与入参相同的顺序
@@ -254,7 +259,7 @@ func (s *skuService) assembleSkuInfos(ctx context.Context, skuList []*model.Sku)
 	for _, sku := range skuList {
 		res = append(res, toResponseSkuInfo(sku, imgMap[sku.SkuID], attrMap[sku.SkuID], saleMap[sku.SkuID]))
 	}
-	return res
+	return res, nil
 }
 
 func (s *skuService) OnSaleSku(ctx context.Context, skuId int64) (err error) {
@@ -285,6 +290,9 @@ func (s *skuService) GetSkuInfo(ctx context.Context, skuId int64) (skuInfo *type
 	// repo 返回纯 model，详情页同样用批量方法拉取关联数据（单条 SKU 时用 IN 也仅 3 次 SQL）。
 	sku, err := s.skuRepo.GetSku(ctx, skuId)
 	if err != nil {
+		if errors.Is(err, repository.ErrSkuNotFound) {
+			return nil, errs.Wrap(result.CodeSkuNotExist, err)
+		}
 		slog.Error("查询SKU失败", slog.Int64("sku_id", skuId), slog.Any("error", err))
 		return nil, errs.Wrap(result.CodeSkuDBErr, err)
 	}

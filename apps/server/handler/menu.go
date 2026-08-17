@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/liwook/go-vue-selection/pkg/errs"
 	"github.com/liwook/go-vue-selection/pkg/idconv"
@@ -152,7 +151,6 @@ func (m *menuHandler) DeleteMenu(c *gin.Context) {
 // @Failure 500 {object} result.ResponseData
 func (m *menuHandler) ToAssign(c *gin.Context) {
 	idStr := c.Param("roleId")
-	fmt.Println(idStr)
 	roleId := idconv.ToInt64Safe(idStr)
 	data, err := m.menuSvc.ToAssign(c.Request.Context(), roleId)
 	if err != nil {

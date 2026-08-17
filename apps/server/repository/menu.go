@@ -32,17 +32,6 @@ func (d *MenuRepo) GetMenuList(ctx context.Context) (menuList []*model.Menu, err
 	return menus, nil
 }
 
-func (d *MenuRepo) GetMenu(ctx context.Context, menuID int64) (menu *model.Menu, err error) {
-	m, err := d.q.Menu.WithContext(ctx).Where(d.q.Menu.MenuID.Eq(menuID)).First()
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
-		return nil, err
-	}
-	return m, nil
-}
-
 func (d *MenuRepo) CheckMenuExist(ctx context.Context, name string) (err error) {
 	count, err := d.q.Menu.WithContext(ctx).Where(d.q.Menu.Name.Eq(name)).Count()
 	if err != nil {
